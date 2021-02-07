@@ -9,6 +9,13 @@ public class Main {
 		try{
 			// TODO: put in your agent here
 			Agent agent = new RandomAgent();
+			BoardState bs = new BoardState(8,8);
+
+			for (State s: bs.board) {
+				System.out.println(s.toString());
+
+			}
+
 
 			int port=4001;
 			if(args.length>=1){
