@@ -1,21 +1,23 @@
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BoardState {
-    public ArrayList<State> board;
+    public HashMap<Point, Integer> board;
 
     public BoardState(int width, int height) {
-        board = new ArrayList<>();
+        board = new HashMap<>();
         for(int i = 0; i<height; i++) {
             for(int j = 0; j<width; j++) {
                 if(i < 2) {
-                    State s = new State(j,i,1); // white pawns
-                    board.add(s);
+                    Point p = new Point(j + 1,i + 1);
+                    board.put(p, 1);
                 } else if (i > height - 3) {
-                    State s = new State(j,i,2); //black pawns
-                    board.add(s);
+                    Point p = new Point(j+1,i+1);
+                    board.put(p, 2);
                 } else {
-                    State s = new State(j,i,0); //there is no pawn on this location
-                    board.add(s);
+                    Point p = new Point(j+1,i+1);
+                    board.put(p, 0);
                 }
             }
         }

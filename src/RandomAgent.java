@@ -45,6 +45,7 @@ public class RandomAgent implements Agent
 
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
+
 			int x1,y1,x2,y2;
 			x1 = random.nextInt(width)+1;
 			x2 = x1 + random.nextInt(3)-1;
@@ -56,6 +57,7 @@ public class RandomAgent implements Agent
 				y2 = y1 - 1;
 			}
 			return "(move " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
+
 		} else {
 			return "noop";
 		}

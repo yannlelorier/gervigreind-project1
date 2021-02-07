@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 	
@@ -8,13 +11,14 @@ public class Main {
 	public static void main(String[] args){
 		try{
 			// TODO: put in your agent here
-			Agent agent = new RandomAgent();
+			Agent agent = new MyAgent();
 			BoardState bs = new BoardState(8,8);
 
-			for (State s: bs.board) {
-				System.out.println(s.toString());
 
-			}
+			/*for(Map.Entry<Point, Integer> entry : bs.board.entrySet()) {
+				System.out.println("X: " + entry.getKey().getX() + " | Y: " + entry.getKey().getY() + "|" + " Pawn: " + entry.getValue());
+			} */
+
 
 
 			int port=4001;
