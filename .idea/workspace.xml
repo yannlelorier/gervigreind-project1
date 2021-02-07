@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="54c7d204-7448-4352-b4d4-9948c57318b3" name="Default Changelist" comment="" />
+    <list default="true" id="54c7d204-7448-4352-b4d4-9948c57318b3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/Agent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/BoardState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/GamePlayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/NanoHTTPD$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/NanoHTTPD$HTTPSession.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/NanoHTTPD$Response.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/NanoHTTPD.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/RandomAgent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/gervigreind-project1/State.class" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,5 +64,17 @@
       <updated>1612714368071</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
