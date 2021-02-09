@@ -10,9 +10,8 @@ public class Main {
 	 */
 	public static void main(String[] args){
 		try{
-			// TODO: put in your agent here
 			Agent agent = new MyAgent();
-			State bs = new State(8,8);
+//			State state = new State(8,8);
 
 
 			/*for(Map.Entry<Point, Integer> entry : bs.board.entrySet()) {

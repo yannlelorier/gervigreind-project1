@@ -19,9 +19,8 @@ public class MyAgent implements Agent {
         myTurn = !role.equals("white");
         this.width = width;
         this.height = height;
-        state = new State(width,height);
+        state = new State(width, height);
         // TODO: add your own initialization code here
-
     }
 
     public String nextAction(int[] lastMove) {
@@ -35,13 +34,13 @@ public class MyAgent implements Agent {
             }
             System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
             // TODO: 1. update your internal world model according to the action that was just executed
-            Point pointToUpdate = new Point(x1,y1);
-            int pawnState = state.board.get(pointToUpdate);
+            Point pointToUpdate = new Point(x1, y1);
+//            int pawnState = state.board.get(pointToUpdate);
             //System.out.println("Pawn:" + pawnState);
-            state.board.replace(pointToUpdate, 0);
+//            state.board.replace(pointToUpdate, 0);
 
-            Point pointDestination = new Point(x2,y2);
-            state.board.replace(pointDestination, pawnState);
+            Point pointDestination = new Point(x2, y2);
+//            state.board.replace(pointDestination, pawnState);
 
             /*
              *for(Map.Entry<Point, Integer> entry : boardState.board.entrySet()) {
@@ -60,24 +59,12 @@ public class MyAgent implements Agent {
             // this needs to be replaced with the actual best move.
             xTest = 1;
             if (role.equals("white")) {
-                yTest = random.nextInt(height-1);
+                yTest = random.nextInt(height - 1);
                 yTest = yTest + 1;
             } else {
-                yTest = random.nextInt(height-1)+2;
+                yTest = random.nextInt(height - 1) + 2;
                 yTest = yTest - 1;
             }
-			/*
-			int x1,y1,x2,y2;
-			x1 = random.nextInt(width)+1;
-			x2 = x1 + random.nextInt(3)-1;
-			if (role.equals("white")) {
-				y1 = random.nextInt(height-1);
-				y2 = y1 + 1;
-			} else {
-				y1 = random.nextInt(height-1)+2;
-				y2 = y1 - 1;
-			} */
-            //return "(move " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
             return "(move " + xTest + " " + yTest + " " + xTest + " " + yTest + ")";
         } else {
             return "noop";

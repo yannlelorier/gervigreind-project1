@@ -94,7 +94,7 @@ public class Environment {
      * @return a list of actions that are possible in the given state
      */
     public List<Action> legalMoves(State state) {
-        // TODO
+        // TODO: Implement our legal moves function
         List<Action> moves = new LinkedList<Action>();
         if (!state.turned_on) {
             moves.add(Action.FORWARD);
@@ -115,7 +115,7 @@ public class Environment {
      * @return the state resulting from doing a in s
      */
     public State getNextState(State s, Action a) {
-        // TODO
+        // TODO: Find successor state
         State succState = s.clone();
         if (a == Action.FORWARD) {
             succState.turned_on = true;
@@ -133,10 +133,9 @@ public class Environment {
     public int getCost(State s, Action a) {
         return switch (a) {
             case FORWARD -> 1;
-            case FORWARD_LEFT -> 1;
-            case FORWARD_RIGHT -> 1;
-            case ATTACK -> 1;
-            default -> 0;
+            case FORWARD_LEFT -> 2;
+            case FORWARD_RIGHT -> 3;
+            case ATTACK -> 4;
         };
     }
 

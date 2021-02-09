@@ -61,26 +61,8 @@ public class SimpleHeuristics implements Heuristics {
     public int eval(State s) {
         // TODO: Implement our evaluation function
         int h = 0;
-        if (s.turned_on) {
-            // if there is dirt: max of { manhattan distance to dirt + manhattan distance from dirt to home }
-            // else manhattan distance to home
-            if (s.dirt.isEmpty()) {
-                h = nbSteps(s.position, s.orientation, env.home);
-            } else {
-                for (Coordinates d : s.dirt) {
-                    int steps = nbSteps(s.position, d) + nbSteps(d, env.home);
-                    if (steps > h) {
-                        h = steps;
-                    }
-                }
-                h += s.dirt.size(); // sucking
-            }
-            h++; // to turn off
-        } else {
-            h += s.dirt.size() * 50;
-            if (!(s.position.equals(env.home))) {
-                h += 100;
-            }
+        if (s.height == -1) {
+            return -1;
         }
         return h;
     }
