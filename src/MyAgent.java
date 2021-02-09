@@ -7,7 +7,7 @@ public class MyAgent implements Agent {
     private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
     private boolean myTurn; // whether it is this agent's turn or not
     private int width, height; // dimensions of the board
-    private BoardState boardState;
+    private State state;
     public int xTest = 1;
     public int yTest = 2;
 
@@ -19,7 +19,7 @@ public class MyAgent implements Agent {
         myTurn = !role.equals("white");
         this.width = width;
         this.height = height;
-        boardState = new BoardState(width,height);
+        state = new State(width,height);
         // TODO: add your own initialization code here
 
     }
@@ -36,24 +36,26 @@ public class MyAgent implements Agent {
             System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
             // TODO: 1. update your internal world model according to the action that was just executed
             Point pointToUpdate = new Point(x1,y1);
-            int pawnState = boardState.board.get(pointToUpdate);
+            int pawnState = state.board.get(pointToUpdate);
             //System.out.println("Pawn:" + pawnState);
-            boardState.board.replace(pointToUpdate, 0);
+            state.board.replace(pointToUpdate, 0);
 
             Point pointDestination = new Point(x2,y2);
-            boardState.board.replace(pointDestination, pawnState);
+            state.board.replace(pointDestination, pawnState);
 
-            /*for(Map.Entry<Point, Integer> entry : boardState.board.entrySet()) {
-                System.out.println("X: " + entry.getKey().getX() + " | Y: " + entry.getKey().getY() + " |" + " Pawn: " + entry.getValue());
-            } */
+            /*
+             *for(Map.Entry<Point, Integer> entry : boardState.board.entrySet()) {
+              System.out.println("X: " + entry.getKey().getX() + " | Y: " + entry.getKey().getY() + " |" + " Pawn: " + entry.getValue());
+            }
+            */
 
         }
 
         // update turn (above that line it myTurn is still for the previous state)
         myTurn = !myTurn;
         if (myTurn) {
-            // TODO: 2. run alpha-beta search to determine the best move
 
+            // TODO: 2. run alpha-beta search to determine the best move
             // Here we just construct a random move (that will most likely not even be possible),
             // this needs to be replaced with the actual best move.
             xTest = 1;
@@ -64,7 +66,8 @@ public class MyAgent implements Agent {
                 yTest = random.nextInt(height-1)+2;
                 yTest = yTest - 1;
             }
-			/*int x1,y1,x2,y2;
+			/*
+			int x1,y1,x2,y2;
 			x1 = random.nextInt(width)+1;
 			x2 = x1 + random.nextInt(3)-1;
 			if (role.equals("white")) {

@@ -12,7 +12,7 @@ public class Main {
 		try{
 			// TODO: put in your agent here
 			Agent agent = new MyAgent();
-			BoardState bs = new BoardState(8,8);
+			State bs = new State(8,8);
 
 
 			/*for(Map.Entry<Point, Integer> entry : bs.board.entrySet()) {

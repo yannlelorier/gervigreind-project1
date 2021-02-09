@@ -1,27 +1,65 @@
-import java.awt.*;
+import java.util.HashSet;
 
-public class State {
-    public Point point;
-    public int pawn; //0 means that there is no pawn, 1 means white, 2 means black
+/**
+ *
+ * This class holds all information about the state of the environment and the robot
+ *
+ */
+public class State implements Cloneable {
+    // TODO: change state according to our needs
+    public HashSet<Coordinates> dirt;
+    public Coordinates position;
+    public int orientation;
+    public boolean turned_on;
 
-    public State(int x, int y, int pawn) {
-        this.point = new Point(x,y);
-        this.pawn = pawn;
+    public State() {
+        dirt = new HashSet<Coordinates>();
+        position = new Coordinates(0,0);
+        orientation = 0;
+        turned_on = false;
     }
 
-    public Point getStateLocation() {
-        return point;
+    public Coordinates facingPosition() {
+        // TODO: not needed
+        Coordinates res = (Coordinates)position.clone();
+        switch (orientation) {
+            case 0: res.y++;
+                break;
+            case 1: res.x++;
+                break;
+            case 2: res.y--;
+                break;
+            case 3: res.x--;
+                break;
+        }
+        return res;
     }
 
-    public int getStatePawn() {
-        return pawn;
+    @SuppressWarnings("unchecked")
+    public State clone() {
+        State cloned;
+        try {
+            cloned = (State)super.clone();
+            cloned.dirt = (HashSet<Coordinates>)dirt.clone();
+            cloned.position = (Coordinates)position.clone();
+        } catch (CloneNotSupportedException e) { e.printStackTrace(); System.exit(-1); cloned=null; }
+        return cloned;
     }
 
-    @Override
+
     public String toString() {
-        return "State{" +
-                "point=" + point +
-                ", pawn=" + pawn +
-                '}';
+        return "State{#dirt: " + dirt.size() + ", position: " + position + ", orientation: " + orientation + ", on:" + turned_on + "}";
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof State)) {
+            return false;
+        }
+        State s = (State) o;
+        return s.position.equals(position) && s.orientation == orientation && s.turned_on == turned_on && s.dirt.equals(dirt);
+    }
+
+    public int hashCode() {
+        return position.hashCode() ^ orientation ^ (turned_on ? 1 : 0) ^ dirt.hashCode();
     }
 }
