@@ -1,143 +1,128 @@
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Environment {
-
-    protected int sizeX, sizeY;
-    protected Coordinates home;
-    protected HashSet<Coordinates> obstacles;
+    protected int sizeX, sizeY; // does not change
     protected State currentState;
+    protected short[][] map;
 
-    public Environment(Collection<String> percepts) {
-        initFromPercepts(percepts);
-    }
+    public Environment(int w, int h) {
+        initFromInput(w, h);
+    } // w = column, h = row
 
-    public void initFromPercepts(Collection<String> percepts) {
-        // TODO: This should be able to be modified for our purpose
+    // this does not need to be fast code since it is only run once
+    public void initFromInput(int w, int h) {
         currentState = new State();
-        obstacles = new HashSet<Coordinates>();
-        Pattern perceptNamePattern = Pattern.compile("\\(\\s*([^\\s]+).*");
-        for (String percept : percepts) {
-            Matcher perceptNameMatcher = perceptNamePattern.matcher(percept);
-            if (perceptNameMatcher.matches()) {
-                String perceptName = perceptNameMatcher.group(1);
-                if (perceptName.equals("HOME")) {
-                    Matcher m = Pattern.compile("\\(\\s*HOME\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
-                    if (m.matches()) {
-                        System.out.println("robot is at " + m.group(1) + "," + m.group(2));
-                        home = new Coordinates(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
-                        currentState.position = (Coordinates) home.clone();
-                    }
-                } else if (perceptName.equals("SIZE")) {
-                    Matcher m = Pattern.compile("\\(\\s*SIZE\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
-                    if (m.matches()) {
-                        System.out.println("size is " + m.group(1) + "," + m.group(2));
-                        sizeX = Integer.parseInt(m.group(1));
-                        sizeY = Integer.parseInt(m.group(2));
-                    }
-                } else if (perceptName.equals("AT")) {
-                    Matcher m = Pattern.compile("\\(\\s*AT\\s+([^\\s]+)\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
-                    if (m.matches()) {
-                        System.out.println(m.group(1) + " is at " + m.group(2) + "," + m.group(3));
-                        Coordinates c = new Coordinates(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
-                        if (m.group(1).equals("DIRT")) {
-                            currentState.dirt.add(c);
-                        } else {
-                            obstacles.add(c);
-                        }
-                    }
-                } else if (perceptName.equals("ORIENTATION")) {
-                    Matcher m = Pattern.compile("\\(\\s*ORIENTATION\\s+([^\\s]+)\\s*\\)").matcher(percept);
-                    if (m.matches()) {
-                        System.out.println("orientation is " + m.group(1));
-                        if (m.group(1).equals("NORTH")) {
-                            currentState.orientation = 0;
-                        } else if (m.group(1).equals("EAST")) {
-                            currentState.orientation = 1;
-                        } else if (m.group(1).equals("SOUTH")) {
-                            currentState.orientation = 2;
-                        } else if (m.group(1).equals("WEST")) {
-                            currentState.orientation = 3;
-                        }
-                    }
+        map = new short[w][h];
+        // initialize the map
+        for (int i = 0; i < w; i++) { // for each column
+            for (int j = 0; j < h; j++) { // for each row
+                if (j < 2) { // if first 2 rows we place white
+                    map[i][j] = 1; // 1 is for white pieces
+                } else if (j > (h - 3)) {
+                    map[i][j] = 2; // 2 is for black pieces
                 } else {
-                    System.out.println("other percept:" + percept);
+                    map[i][j] = 0; // else empty
                 }
-            } else {
-                System.err.println("strange percept that does not match pattern: " + percept);
             }
         }
+        currentState.myMap = map;
     }
 
-    /**
-     * @return the current state of the environment
-     */
-    public State getCurrentState() {
-        return currentState;
-    }
-
-    /**
-     * updates the current state of the environment based on the given action
-     *
-     * @param a
-     */
-    public void doAction(Action a) {
-        currentState = getNextState(currentState, a);
-    }
-
-    /**
-     * @param state
-     * @return a list of actions that are possible in the given state
-     */
-    public List<Action> legalMoves(State state) {
-        // TODO: Implement our legal moves function
-        List<Action> moves = new LinkedList<Action>();
-        if (!state.turned_on) {
-            moves.add(Action.FORWARD);
-        } else {
-            if (state.position.equals(home)) {
-                moves.add(Action.FORWARD_RIGHT);
+    // get all moves for current player
+    public List<Moves> legalMoves(State state) {
+        List<Moves> moves = new LinkedList<Moves>();
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (state.isWhiteTurn && map[i][j] == 1) {
+                    moves.addAll(getMoves(state, i, j));
+                } else if (!state.isWhiteTurn && map[i][j] == 2) {
+                    moves.addAll(getMoves(state, i, j));
+                }
             }
-            moves.add(Action.FORWARD);
-            moves.add(Action.FORWARD_LEFT);
-            moves.add(Action.FORWARD_RIGHT);
         }
         return moves;
     }
 
-    /**
-     * @param s state
-     * @param a action
-     * @return the state resulting from doing a in s
-     */
-    public State getNextState(State s, Action a) {
-        // TODO: Find successor state
-        State succState = s.clone();
-        if (a == Action.FORWARD) {
-            succState.turned_on = true;
-        } else if (a == Action.FORWARD_RIGHT) {
-            succState.turned_on = false;
+    // find all moves for piece located at x, y
+    public List<Moves> getMoves(State s, int x, int y) {
+        List<Moves> moves = new LinkedList<Moves>();
+        // todo
+        if (s.isWhiteTurn) {
+            if (y + 1 < s.myMap[0].length - 1) {
+                // left diagonal
+                if (x > 0) {
+                    if (s.myMap[x - 1][y + 1] != 1) {
+                        moves.add(new Moves(x, y, x - 1, y + 1));
+                    }
+                }
+                // right diagonal
+                if (x < s.myMap.length - 1) {
+                    if (s.myMap[x + 1][y + 1] != 1) {
+                        moves.add(new Moves(x, y, x + 1, y + 1));
+                    }
+                }
+                // forward
+                if (s.myMap[x][y + 1] == 0) {
+                    moves.add(new Moves(x, y, x, y + 1));
+                }
+            }
+        } else {
+            if (x > 0) {
+                // left diagonal
+                if (x > 0) {
+                    if (s.myMap[x - 1][y - 1] != 2) {
+                        moves.add(new Moves(x, y, x + 1, y - 1));
+                    }
+                }
+                // right diagonal
+                if (x < s.myMap.length - 1) {
+                    if (s.myMap[x + 1][y - 1] != 2) {
+                        moves.add(new Moves(x, y, x + 1, y - 1));
+                    }
+                }
+                // forward
+                if (s.myMap[x][y - 1] == 0) {
+                    moves.add(new Moves(x, y, x, y - 1));
+                }
+            }
         }
-        return succState;
+        return moves;
     }
 
-    /**
-     * @param s
-     * @param a
-     * @return the cost of doing action a in state s
-     */
-    public int getCost(State s, Action a) {
-        return switch (a) {
-            case FORWARD -> 1;
-            case FORWARD_LEFT -> 2;
-            case FORWARD_RIGHT -> 3;
-            case ATTACK -> 4;
-        };
+    public State getNextState(State s, Moves m) {
+        State c = s.clone();
+        // todo
+        return c;
+    }
+
+    public int eval(State s) {
+        // Set your own evaluation here
+        // this should not be done prior to State and Environment
+        int e = 0;
+        // example evaluation
+        int blackPieces = 0;
+        int whitePieces = 0;
+
+        for (int i = 0; i < s.myMap.length; i++) { // for each column
+            for (int j = 0; j < s.myMap[0].length; j++) { // for each row
+                if (s.myMap[i][j] == 1) {
+                    whitePieces++;
+                } else if (s.myMap[i][j] == 2) {
+                    blackPieces++;
+                }
+            }
+        }
+        e = whitePieces - blackPieces;
+        if (!s.isWhiteTurn) {
+            e = -e; // negate the score
+        }
+        return e;
+    }
+
+    // print out current state for this environment. Good for testing.
+    public String toString() {
+        return currentState.toString();
     }
 
 }
-

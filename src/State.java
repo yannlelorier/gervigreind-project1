@@ -1,21 +1,45 @@
-import java.util.HashSet;
 
-/**
- * This class holds all information about the state of the environment and the robot
- */
 public class State implements Cloneable {
-    // TODO: change state according to our needs
-    public HashSet<Coordinates> whitePawn;
-    public HashSet<Coordinates> blackPawn;
-    public HashSet<Coordinates> board;
-    public int width, height;
+    protected short[][] myMap; // 0, 1 or 2 for empty, black or white
+    protected boolean isWhiteTurn;
+    protected int eval; // some evaluation measure
 
+    // this should only be called once each time your player makes a move
     public State() {
-//        whitePawn = new HashSet<Coordinates>();
-//        blackPawn = new HashSet<Coordinates>();
-        board = new HashSet<Coordinates>();
-        width = 3;
-        height = 3;
+        isWhiteTurn = true;
+        myMap = new short[2][2];
+        eval = 0;
+    }
+
+    // prints out the state as who's turn it is and how the board looks like
+    public String toString() {
+        System.out.println("myMapLength: " + myMap.length + " , " + myMap[0].length);
+        String toRet = "isWhiteTurn: " + isWhiteTurn;
+        if (myMap != null && myMap.length > 0 && myMap[0].length > 0){
+            toRet += "\nMap: \n";
+            for (int j = myMap[0].length - 1; j >= 0 ; j--){ // for each row, we have to go from up to down
+
+                for (int i = 0; i < myMap.length; i++){ // for each column
+                    if (myMap[i][j] == 0){
+                        toRet += "- "; // represents empty space
+                    }
+                    else if (myMap[i][j] == 1){
+                        toRet += "W "; // represents white piece
+                    }
+                    else if (myMap[i][j] == 2){
+                        toRet += "B "; // represents black piece
+                    }
+                    else { // this should never happen, but good to have just in case
+                        System.out.println("--Error-- State : toString() -> myMap[i][j] is not 0, 1 or 2");
+                    }
+                }
+                toRet += "\n";
+            }
+        }
+        else {
+            toRet += "--Error-- State : toString() -> could not print out map";
+        }
+        return toRet;
     }
 
 
@@ -23,30 +47,13 @@ public class State implements Cloneable {
     public State clone() {
         State cloned;
         try {
-            cloned = (State) super.clone();
-            cloned.whitePawn = (HashSet<Coordinates>) whitePawn.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            System.exit(-1);
-            cloned = null;
-        }
+            cloned = (State)super.clone();
+            short[][] newMap = new short[myMap.length][]; // we cannot directly clone 2D arrays so we need to iterate
+            for (int i = 0; i < myMap.length; i++){newMap[i] = myMap[i].clone();};
+            cloned.myMap = newMap;
+            cloned.isWhiteTurn = isWhiteTurn; // make sure to change the current player somewhere
+        } catch (CloneNotSupportedException e) { e.printStackTrace(); System.exit(-1); cloned=null; }
         return cloned;
     }
 
-
-    public String toString() {
-        return "State{ This is the state }";
-    }
-
-    public boolean equals(Object o) {
-        if (!(o instanceof State)) {
-            return false;
-        }
-        State s = (State) o;
-        return false;
-    }
-
-    public int hashCode() {
-        return whitePawn.hashCode() ^ width ^ height ^ blackPawn.hashCode();
-    }
 }
