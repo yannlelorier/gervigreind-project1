@@ -1,44 +1,61 @@
 
+
 public class Main {
-	
-	/**
-	 * starts the game player and waits for messages from the game master <br>
-	 * Command line options: [port]
-	 */
-	public static void main(String[] args){
-		try{
-			// 2 different environments
-			Environment env3_5 = new Environment(3, 5);
-			Environment env3_4 = new Environment(3, 4);
 
-			// checking legal Moves and doMove undoMove
+    /**
+     * starts the game player and waits for messages from the game master <br>
+     * Command line options: [port]
+     */
+    private static void traverseNodes(Node node, int depth) {
+        if (node.parent != null) {
+            System.out.println(node.m);
+            traverseNodes(node.parent, depth - 1);
+        } else {
+            System.out.println(node.m);
+        }
+    }
 
-			System.out.println(env3_5.legalMoves(env3_5.currentState));
+    public static void main(String[] args) {
+        try {
+            // 2 different environments
+            Environment env3_5 = new Environment(3, 5);
+//			Environment env3_4 = new Environment(3, 4);
 
-			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2, false));
-			System.out.println(env3_5.currentState);
-			env3_5.doMove(env3_5.currentState, new Moves(0, 3, 1, 2, true));
-			System.out.println(env3_5.currentState);
-			env3_5.undoMove(env3_5.currentState, new Moves(0, 3, 1, 2, true));
-			System.out.println(env3_5.currentState);
+            // checking legal Moves and doMove undoMove
 
-			System.out.println(env3_5.legalMoves(env3_5.currentState));
+//			System.out.println(env3_5.legalMoves(env3_5.currentState));
+            // Node(Node parent, int val, Moves m) // where it moves
+            Node n1 = new Node(0, new Moves(1, 1, 1, 2));
+            Node n2 = new Node(n1, 0, new Moves(0, 3, 1, 2));
+            Node n3 = new Node(n2, 0, new Moves(0, 3, 1, 2));
+//
+//            traverseNodes(n3, n3.depth);
 
-			// checking isTerminalState()
-			for (int i = 0; i < env3_4.currentState.myMap.length; i++) { // for each column
-				for (int j = 0; j < env3_4.currentState.myMap[0].length; j++) { // for each row
-					env3_4.currentState.myMap[i][j] = 0;
-				}
-			}
-			env3_4.currentState.isWhiteTurn = false;
-			env3_4.currentState.myMap[0][1] = 1;
-			env3_4.currentState.myMap[0][2] = 2;
 
-			env3_4.currentState.myMap[2][1] = 1;
-
-			System.out.println(env3_4.currentState);
-
-			System.out.println(env3_4 + "is it terminal: " + env3_4.isTerminalState(env3_4.currentState));
+//			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2));
+//			System.out.println(env3_5.currentState);
+//			env3_5.doMove(env3_5.currentState, new Moves(0, 3, 1, 2));
+//			System.out.println(env3_5.currentState);
+//			env3_5.undoMove(env3_5.currentState, new Moves(0, 3, 1, 2));
+//			System.out.println(env3_5.currentState);
+//
+//			System.out.println(env3_5.legalMoves(env3_5.currentState));
+//
+//			// checking isTerminalState()
+//			for (int i = 0; i < env3_4.currentState.myMap.length; i++) { // for each column
+//				for (int j = 0; j < env3_4.currentState.myMap[0].length; j++) { // for each row
+//					env3_4.currentState.myMap[i][j] = 0;
+//				}
+//			}
+//			env3_4.currentState.isWhiteTurn = false;
+//			env3_4.currentState.myMap[0][1] = 1;
+//			env3_4.currentState.myMap[0][2] = 2;
+//
+//			env3_4.currentState.myMap[2][1] = 1;
+//
+//			System.out.println(env3_4.currentState);
+//
+//			System.out.println(env3_4 + "is it terminal: " + env3_4.isTerminalState(env3_4.currentState));
 
 
 
@@ -145,18 +162,18 @@ public class Main {
 						" and we get a map that looks like:\n" + tempStateForPrint);
 			}
 			*/
-			// 7. Update the environment after each move inside MyAgent.java
-				// That is the TODO: 1. update your internal world model according to the action that was just executed
-				// make your own test, for example printing inside myAgent to make sure it works.
+            // 7. Update the environment after each move inside MyAgent.java
+            // That is the TODO: 1. update your internal world model according to the action that was just executed
+            // make your own test, for example printing inside myAgent to make sure it works.
 
-			// 8. Make an environment that exists without
+            // 8. Make an environment that exists without
 
-			// 9. Create and test some search algorithm inside MyAgent.java, don't go right into creating fully implemented alpha-beta search
-				// you should start with something simple that can be tested, then add one and one functionality onto it. For example
-				// a) start with DFS with  implementing MiniMax
-				// b) Then make it iterative deepening
-				// c) and then finally add pruning.
-				//
+            // 9. Create and test some search algorithm inside MyAgent.java, don't go right into creating fully implemented alpha-beta search
+            // you should start with something simple that can be tested, then add one and one functionality onto it. For example
+            // a) start with DFS with  implementing MiniMax
+            // b) Then make it iterative deepening
+            // c) and then finally add pruning.
+            //
 
 
 			/*
@@ -169,9 +186,10 @@ public class Main {
 			}
 			GamePlayer gp=new GamePlayer(port, agent);
 			gp.waitForExit();
-		}catch(Exception ex){
-			ex.printStackTrace();
-			System.exit(-1);
-		}
-	}
+			*/
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(-1);
+        }
+    }
 }

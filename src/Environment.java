@@ -58,18 +58,18 @@ public class Environment {
                 // left diagonal
                 if (x > 0){ // if we are not at the LEFT end of the map then we check if we can go diagonal left
                     if (s.myMap[x-1][y+1] == 2){ // if the top left square is either empty or has black piece (not white piece) we add the move
-                        moves.add(new Moves(x, y, x-1,y+1, true));
+                        moves.add(new Moves(x, y, x-1,y+1));
                     }
                 }
                 // right diagonal
                 if (x < s.myMap.length - 1){ // if we are not at the RIGHT end of the map then we check if we can go diagonal right
                     if (s.myMap[x+1][y+1] == 2){ // if the top right square is either empty or has black piece (not white piece) we add the move
-                        moves.add(new Moves(x, y, x+1,y+1, true));
+                        moves.add(new Moves(x, y, x+1,y+1));
                     }
                 }
                 // forward
                 if (s.myMap[x][y+1] == 0){ // if the square in front of us is empty
-                    moves.add(new Moves(x, y, x,y+1, false));
+                    moves.add(new Moves(x, y, x,y+1));
                 }
             }
         }
@@ -78,18 +78,18 @@ public class Environment {
                 // left diagonal
                 if (x > 0){ // if we are not at the LEFT end of the map then we check if we can go diagonal left
                     if (s.myMap[x-1][y-1] == 1){ // if the bottom left square is either empty or has white piece (not black piece) we add the move
-                        moves.add(new Moves(x, y, x-1,y-1, true));
+                        moves.add(new Moves(x, y, x-1,y-1));
                     }
                 }
                 // right diagonal
                 if (x < s.myMap.length - 1){ // if we are not at the RIGHT end of the map then we check if we can go diagonal right
                     if (s.myMap[x+1][y-1] == 1){ // if the bottom right square is either empty or has white piece (not black piece) we add the move
-                        moves.add(new Moves(x, y, x+1,y-1, true));
+                        moves.add(new Moves(x, y, x+1,y-1));
                     }
                 }
                 // forward
                 if (s.myMap[x][y-1] == 0){ // if the square below is empty
-                    moves.add(new Moves(x, y, x,y-1, false));
+                    moves.add(new Moves(x, y, x,y-1));
                 }
             }
         }
@@ -128,7 +128,7 @@ public class Environment {
             else {
                 s.myMap[m.x][m.y] = 1; // place the new piece and (possibly) replace the black piece
                 s.myMap[m.x2][m.y2] = 0; // Make it empty square again
-                if (m.kill){
+                if (m.x != m.x2){
                     s.myMap[m.x2][m.y2] = 2; // undo the killing
                 }
             }
@@ -140,7 +140,7 @@ public class Environment {
             else {
                 s.myMap[m.x][m.y] = 2; // place the new piece and (possibly) replace the black piece
                 s.myMap[m.x2][m.y2] = 0; // make the old square empty
-                if (m.kill){
+                if (m.x != m.x2){
                     s.myMap[m.x2][m.y2] = 1; // make the old square empty
                 }
             }

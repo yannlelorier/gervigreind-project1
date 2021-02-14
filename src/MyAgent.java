@@ -34,7 +34,7 @@ public class MyAgent implements Agent
             if (env.currentState.myMap[lastMove[2]][lastMove[3]] == 0){
                 didKill = true;
             }
-            Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3], didKill);
+            Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3] );
             String roleOfLastPlayer;
             if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
                 roleOfLastPlayer = "white";
@@ -80,7 +80,7 @@ public class MyAgent implements Agent
 
     public void dfs_with_depth(int remainingDepth, Node parentNode){
         if (remainingDepth == 0) { // if we have reached our depth, we evaluate the state
-            Node currentNode = new Node(parentNode, env.eval(env.currentState));
+//             Node currentNode = new Node(parentNode, env.eval(env.currentState) );
             System.out.println("State: " + env.currentState.toString() + " has evaluation of: " + env.eval(env.currentState)); // to debug
         }
         else { // else we have to continue going
@@ -89,12 +89,12 @@ public class MyAgent implements Agent
             if (!env.currentState.isWhiteTurn){
                 worstVal = -worstVal;
             }
-            Node thisNode = new Node(parentNode, worstVal);
+//             Node thisNode = new Node(parentNode, worstVal, );
             // iterate through all available moves
             for (Moves m : env.legalMoves(env.currentState)){
                 env.doMove(env.currentState, m); // do the move to change the state
                 if (remainingDepth > 0) {
-                    dfs_with_depth(remainingDepth - 1, thisNode);
+//                     dfs_with_depth(remainingDepth - 1, thisNode);
                 }
                 env.undoMove(env.currentState, m); // undo the move to get the old state back
             }
