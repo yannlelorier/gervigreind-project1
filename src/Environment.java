@@ -53,11 +53,11 @@ public class Environment {
                     moves.add(new Moves(x,y, x, y+1));
                 }
                 //right diagonal
-                if (s.myMap[x+1][y+1]==2 && (x+1 < s.myMap.length-1)) {
+                if ((x+1 < s.myMap.length-1) && s.myMap[x+1][y+1]==2) {
                     moves.add(new Moves(x,y,x+1, y+1));
                 }
                 //left diagonal
-                if (s.myMap[x-1][y+1]==2 && (x-1 >= 0)) {
+                if ((x-1 >= 0) && s.myMap[x-1][y+1]==2) {
                     moves.add(new Moves(x,y,x-1,y+1));
                 }
             }
@@ -69,11 +69,11 @@ public class Environment {
                     moves.add(new Moves(x,y, x, y-1));
                 }
                 //right diagonal
-                if (s.myMap[x+1][y-1]==1 && (x+1 < s.myMap.length-1)) {
+                if ((x+1 < s.myMap.length-1) && s.myMap[x+1][y-1]==1) {
                     moves.add(new Moves(x,y,x+1, y-1));
                 }
                 //left diagonal
-                if (s.myMap[x-1][y-1]==1 && (x-1 >= 0)) {
+                if ((x-1 >= 0) && s.myMap[x-1][y-1]==1 ) {
                     moves.add(new Moves(x,y,x-1,y-1));
                 }
             }
@@ -85,9 +85,9 @@ public class Environment {
         State c = s.clone();
         // TODO
         if (c.isWhiteTurn) {
-            c.myMap[m.x2][m.y2] = 2;
-        } else {
             c.myMap[m.x2][m.y2] = 1;
+        } else {
+            c.myMap[m.x2][m.y2] = 2;
         }
         c.myMap[m.x][m.y] = 0;
         c.isWhiteTurn = !c.isWhiteTurn;
