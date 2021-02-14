@@ -42,7 +42,7 @@ public class MyAgent implements Agent
                 roleOfLastPlayer = "black";
             }
             System.out.println(roleOfLastPlayer + " moved from " + lm.x + "," + lm.y + " to " + lm.x2 + "," + lm.y2);
-            env.currentState = env.getNextState(env.currentState, lm); // TODO: 1. update your internal world model according to the action that was just executed
+            env.currentState = env.getNextState(env.currentState, lm); //TODO maybe it works
         }
 
         // update turn (above that line it myTurn is still for the previous state)
@@ -93,6 +93,9 @@ public class MyAgent implements Agent
             throw new RuntimeException();
         }
         // for each available move...
+        for (Node node : frontierList) {
+            System.out.println("Node " + node.state.toString());
+        }
         // update frontier list
 
         // ...

@@ -93,8 +93,10 @@ public class Environment {
         State c = s.clone();
         // todo
         if (c.isWhiteTurn) {
+            System.out.println("camara que pedo 1");
             c.myMap[m.x2][m.y2] = 1;
         }else {
+            System.out.println("camara que pedo");
             c.myMap[m.x2][m.y2] = 2;
         }
         c.myMap[m.x][m.y] = 0;
