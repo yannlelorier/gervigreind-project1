@@ -1,10 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
 
-public class MyAgent implements Agent {
-    private Random random = new Random();
-
+public class MyAgent implements Agent
+{
     private String role; // the name of this agent's role (white or black)
     private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
     private boolean myTurn; // whether it is this agent's turn or not
@@ -12,8 +11,6 @@ public class MyAgent implements Agent {
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
-    private ArrayList<Node> frontierList;
-    private int sizeOfTable = 1000;
 
     /*
         init(String role, int playclock) is called once before you have to select the first action. Use it to initialize the agent. role is either "white" or "black" and playclock is the number of seconds after which nextAction must return.
@@ -27,16 +24,17 @@ public class MyAgent implements Agent {
         isWhiteTurn = true;
         isTerminalState = false;
         env = new Environment(width, height);
-        frontierList = new ArrayList<Node>();
-        // TODO: add your own initialization code here
-
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
     public String nextAction(int[] lastMove) {
         if (lastMove != null) {
-            Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
+            boolean didKill = true;
+            if (env.currentState.myMap[lastMove[2]][lastMove[3]] == 0){
+                didKill = true;
+            }
+            Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3], didKill);
             String roleOfLastPlayer;
             if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
                 roleOfLastPlayer = "white";
@@ -44,78 +42,75 @@ public class MyAgent implements Agent {
                 roleOfLastPlayer = "black";
             }
             System.out.println(roleOfLastPlayer + " moved from " + lm.x + "," + lm.y + " to " + lm.x2 + "," + lm.y2);
-            env.currentState = env.getNextState(env.currentState, lm); // TODO: 1. update your internal world model according to the action that was just executed
-
-            System.out.println("This is nextAction $$$$$$: " + env.currentState.toString());
+            // TODO: 1. update your internal world model according to the action that was just executed
+            env.doMove(env.currentState, lm);
         }
 
         // update turn (above that line it myTurn is still for the previous state)
         myTurn = !myTurn;
         if (myTurn) {
-            int depth = 1;
-            while (true) { // some loop that goes on until a RuntimeException is thrown.
-                try {
-                    // Here we just construct a random move (that will most likely not even be possible),
-                    // this needs to be replaced with the actual best move.
-                    int x1, y1, x2, y2;
-                    x1 = random.nextInt(width) + 1;
-                    x2 = x1 + random.nextInt(3) - 1;
-                    if (role.equals("white")) {
-                        y1 = random.nextInt(height - 1);
-                        y2 = y1 + 1;
-                    } else {
-                        y1 = random.nextInt(height - 1) + 2;
-                        y2 = y1 - 1;
-                    }
-                    return "(move " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
-                } catch (RuntimeException e) {
-                    System.out.println("Some error occurred!");
-                }
-                depth++;
+            // check if current player is correct
+            if (!(role == "white" && env.currentState.isWhiteTurn || role == "black" && !env.currentState.isWhiteTurn)){
+                System.out.println("MyAgent : nextAction -> current player is not correct");
+            }
+            int worstVal = Integer.MAX_VALUE;
+            if (!env.currentState.isWhiteTurn){
+                worstVal = -worstVal;
             }
 
-            // int alpha = Integer.MAX_VALUE;
-            // int beta = -Integer.MAX_VALUE; // you cannot do Integer.Min_Value since if you do -MinValue you will overflow the buffer.
+
+
             // TODO: 2. run alpha-beta search to determine the best move
-            // look at RandomAgent to understand what to return
+            // look at RandomAgent to start
             // You should start with something "simple" Like DFS
             // Then go add on it more, For example: DFS -> DFS with iterative deepening
             // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
             // Remember to always test everything you do as soon as you can do it!!
 
-            //return "noop"; // This has to be changed
+            return "noop"; // This has to be changed
         } else {
             return "noop";
         }
     }
 
-    public Node findNextNodeToExpand() {
-        if (frontierList.isEmpty()) {
-            System.out.println("MyAgent : findNextNodeToExpand() -> frontierList is empty");
-            return null;
-        } else {
-            // todo
-            return null;
-        }
+    @Override
+    public void cleanup() {
+
     }
 
-    public void expandNode() {
-        boolean isTimeUp = true; // TODO: of course change this
-        if (isTimeUp) {
-            throw new RuntimeException();
+    public void dfs_with_depth(int remainingDepth, Node parentNode){
+        if (remainingDepth == 0) { // if we have reached our depth, we evaluate the state
+            Node currentNode = new Node(parentNode, env.eval(env.currentState));
+            System.out.println("State: " + env.currentState.toString() + " has evaluation of: " + env.eval(env.currentState)); // to debug
         }
+        else { // else we have to continue going
+            // create worst value so it will definitely get updated
+            int worstVal = Integer.MAX_VALUE;
+            if (!env.currentState.isWhiteTurn){
+                worstVal = -worstVal;
+            }
+            Node thisNode = new Node(parentNode, worstVal);
+            // iterate through all available moves
+            for (Moves m : env.legalMoves(env.currentState)){
+                env.doMove(env.currentState, m); // do the move to change the state
+                if (remainingDepth > 0) {
+                    dfs_with_depth(remainingDepth - 1, thisNode);
+                }
+                env.undoMove(env.currentState, m); // undo the move to get the old state back
+            }
+        }
+
+    }
+
+
+    public void expandNode() {
+
         // for each available move...
+
         // update frontier list
 
         // ...
 
-    }
-
-
-    // is called when the game is over or the match is aborted
-    @Override
-    public void cleanup() {
-        // TODO: cleanup so that the agent is ready for the next match
     }
 
 }

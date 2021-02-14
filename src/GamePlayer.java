@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 
 public class GamePlayer extends NanoHTTPD {
-
+	
 	private Agent agent;
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
@@ -70,7 +70,7 @@ public class GamePlayer extends NanoHTTPD {
 			if (m.find()) {
 				coord = new int[4];
 				for (int i = 0; i<4; i++) {
-					coord[i] = Integer.parseInt(m.group(i+1));
+					coord[i] = Integer.parseInt(m.group(i+1)); 
 				}
 			}
 		}catch(Exception ex){
