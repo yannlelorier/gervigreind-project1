@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="54c7d204-7448-4352-b4d4-9948c57318b3" name="Default Changelist" comment="0.2">
-      <change afterPath="$PROJECT_DIR$/src/Moves.java" afterDir="false" />
+    <list default="true" id="54c7d204-7448-4352-b4d4-9948c57318b3" name="Default Changelist" comment="code from Bjarki">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Action.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlfaBetaSearch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Coordinates.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GamePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GamePlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Heuristics.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MyAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MyAgent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RandomAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RandomAgent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SearchAlgorithm.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SimpleHeuristics.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/State.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/State.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="yann" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

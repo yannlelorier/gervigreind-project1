@@ -47,7 +47,6 @@ public class Environment {
     // find all moves for piece located at x, y
     public List<Moves> getMoves(State s, int x, int y) {
         List<Moves> moves = new LinkedList<Moves>();
-        // todo
         if (s.isWhiteTurn) {
             if (y + 1 < s.myMap[0].length - 1) {
                 // left diagonal
@@ -67,12 +66,12 @@ public class Environment {
                     moves.add(new Moves(x, y, x, y + 1));
                 }
             }
-        } else {
-            if (x > 0) {
+        } else { // if it is the black turn
+            if (y + 1 > s.myMap[0].length - 2) {
                 // left diagonal
                 if (x > 0) {
                     if (s.myMap[x - 1][y - 1] != 2) {
-                        moves.add(new Moves(x, y, x + 1, y - 1));
+                        moves.add(new Moves(x, y, x - 1, y - 1));
                     }
                 }
                 // right diagonal
