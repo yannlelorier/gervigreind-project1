@@ -89,16 +89,15 @@ public class Environment {
         return moves;
     }
 
-    public State getNextState(State s, Moves m) { //x,y,x2,y2
+    public State getNextState(State s, Moves m) { // x,y,x2,y2
+        // TODO
         State c = s.clone();
-        // todo
         if (c.isWhiteTurn) {
-            c.myMap[m.x2][m.y2] = 1;
-        }else {
             c.myMap[m.x2][m.y2] = 2;
+        } else {
+            c.myMap[m.x2][m.y2] = 1;
         }
         c.myMap[m.x][m.y] = 0;
-        //System.out.println("Old State: \n"+s.toString()+"\n-----------------\n"+"new State:\n"+c.toString());
         return c;
     }
 

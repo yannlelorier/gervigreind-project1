@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
-public class MyAgent implements Agent
-{
+public class MyAgent implements Agent {
+    private Random random = new Random();
+
     private String role; // the name of this agent's role (white or black)
     private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
     private boolean myTurn; // whether it is this agent's turn or not
@@ -43,26 +45,37 @@ public class MyAgent implements Agent
             }
             System.out.println(roleOfLastPlayer + " moved from " + lm.x + "," + lm.y + " to " + lm.x2 + "," + lm.y2);
             env.currentState = env.getNextState(env.currentState, lm); // TODO: 1. update your internal world model according to the action that was just executed
+
+            System.out.println("This is nextAction $$$$$$: " + env.currentState.toString());
         }
 
         // update turn (above that line it myTurn is still for the previous state)
         myTurn = !myTurn;
         if (myTurn) {
             int depth = 1;
-
-            while (true){ // some loop that goes on until a RuntimeException is thrown.
-                try{
-                    // do your search here
-                    return "noop"; // This has to be changed
-                }catch(RuntimeException e){
-
+            while (true) { // some loop that goes on until a RuntimeException is thrown.
+                try {
+                    // Here we just construct a random move (that will most likely not even be possible),
+                    // this needs to be replaced with the actual best move.
+                    int x1, y1, x2, y2;
+                    x1 = random.nextInt(width) + 1;
+                    x2 = x1 + random.nextInt(3) - 1;
+                    if (role.equals("white")) {
+                        y1 = random.nextInt(height - 1);
+                        y2 = y1 + 1;
+                    } else {
+                        y1 = random.nextInt(height - 1) + 2;
+                        y2 = y1 - 1;
+                    }
+                    return "(move " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
+                } catch (RuntimeException e) {
+                    System.out.println("Some error occurred!");
                 }
-                depth ++;
-
+                depth++;
             }
 
-            //int alpha = Integer.MAX_VALUE;
-            //int beta = -Integer.MAX_VALUE; // you cannot do Integer.Min_Value since if you do -MinValue you will overflow the buffer.
+            // int alpha = Integer.MAX_VALUE;
+            // int beta = -Integer.MAX_VALUE; // you cannot do Integer.Min_Value since if you do -MinValue you will overflow the buffer.
             // TODO: 2. run alpha-beta search to determine the best move
             // look at RandomAgent to understand what to return
             // You should start with something "simple" Like DFS
@@ -77,19 +90,18 @@ public class MyAgent implements Agent
     }
 
     public Node findNextNodeToExpand() {
-        if (frontierList.isEmpty()){
+        if (frontierList.isEmpty()) {
             System.out.println("MyAgent : findNextNodeToExpand() -> frontierList is empty");
             return null;
-        }
-        else{
+        } else {
             // todo
             return null;
         }
     }
 
     public void expandNode() {
-        boolean isTimeUp = true; // of course change this
-        if (isTimeUp){
+        boolean isTimeUp = true; // TODO: of course change this
+        if (isTimeUp) {
             throw new RuntimeException();
         }
         // for each available move...
