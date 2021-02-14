@@ -9,6 +9,7 @@ public class Node {
 
     /**
      * create the root node of the search tree
+     *
      * @param val the evaluation of this node
      */
     public Node(int val, Moves m) {
@@ -17,15 +18,18 @@ public class Node {
         this.m = m;
         this.evaluation = val;
     }
+
     /**
      * create a new node
+     *
      * @param parent the parent of the node
-     * @param val the evaluation of this node
+     * @param val    the evaluation of this node
      */
-    public Node(Node parent, int val) {
+    public Node(Node parent, int val, Moves m) {
         this.parent = parent;
         this.depth = parent.depth + 1;
         this.evaluation = val;
+        this.m = m;
     }
 
 
