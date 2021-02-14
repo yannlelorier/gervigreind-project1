@@ -42,7 +42,6 @@ public class RandomAgent implements Agent
 		myTurn = !myTurn;
 		if (myTurn) {
 			// TODO: 2. run alpha-beta search to determine the best move
-
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
 			int x1,y1,x2,y2;
