@@ -76,9 +76,7 @@ public class MyAgent implements Agent {
     }
 
     @Override
-    public void cleanup() {
-
-    }
+    public void cleanup() {}
     // todo: evaluate and find best value
     // todo: find best move based on the best value
     // todo: white - black = minimax
