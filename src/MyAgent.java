@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MyAgent implements Agent {
@@ -10,6 +8,7 @@ public class MyAgent implements Agent {
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
+    Moves bestMove;
 
     /*
         init(String role, int playclock) is called once before you have to select the first action. Use it to initialize the agent. role is either "white" or "black" and playclock is the number of seconds after which nextAction must return.
@@ -56,6 +55,9 @@ public class MyAgent implements Agent {
             if (!env.currentState.isWhiteTurn) {
                 worstVal = -worstVal;
             }
+            bestMove = new Moves(-1, -1, -1, -1); // initialized as a "rubbish" move
+            int res = dfs_depth(2);
+            System.out.println("kmara 11111 "+ res);
 
             // dfs_with_depth(, new Node(0, m));
             // TODO: 2. run alpha-beta search to determine the best move
@@ -104,47 +106,58 @@ public class MyAgent implements Agent {
         return -1;
     }
 
-    public Moves dfs_depth(int remainingDepth) {
-        Moves bestMove = new Moves(-1, -1, -1, -1);
-        int worstVal = Integer.MAX_VALUE;
-        if (!env.currentState.isWhiteTurn) {
-            worstVal = -worstVal;
-        }
-        if (remainingDepth == 0) { // if we have reached our depth, we evaluate the state
-            return bestMove;
-        } else { // else we have to continue going
-            // iterate through all available moves
-            for (Moves m : env.legalMoves(env.currentState)) {
-                State thisState = env.currentState;
-                env.doMove(env.currentState, m); // do the move to change the state
-                if (env.eval(env.currentState) > env.eval(thisState)) {
+    public int dfs_depth(int depth) {
+        int bestEval;
+        System.out.println("one tinme");
+        if (depth == 0) {
+            if (isTerminalState) {
+                System.out.println("Es terminal krnal");
+                //TODO change this val (at some point)
+            }
+            System.out.println("State_____________\n"+env.currentState);
+            System.out.println(bestMove);
+            return env.eval(env.currentState);
+        }else {
+            bestEval = Integer.MAX_VALUE;
+            bestEval = -bestEval;
+            List<Moves> moves = env.legalMoves(env.currentState);
+            if (moves.size() == 0) {
+                if (isTerminalState) {
+                    return bestEval;
+                }
+                return 0;
+            }
+            for (Moves m : moves) {
+                env.doMove(env.currentState, m);
+                int evaluation = -dfs_depth(depth - 1);
+                if (evaluation > bestEval) { // for some condition we update the best move
+                    bestEval = evaluation;
                     bestMove = m;
                 }
-                dfs_with_depth(remainingDepth - 1);
-                env.undoMove(env.currentState, m); // undo the move to get the old state back
+                env.undoMove(env.currentState, m); // going back to check other moves
             }
         }
-        return bestMove;
+        return bestEval;
     }
 
-    private static void traverseNodes(Node node, int depth) {
-        if (node.parent != null) {
-            System.out.println(node.m);
-            traverseNodes(node.parent, depth - 1);
-        } else {
-            System.out.println(node.m);
-        }
-    }
+    // private static void traverseNodes(Node node, int depth) {
+    //     if (node.parent != null) {
+    //         System.out.println(node.m);
+    //         traverseNodes(node.parent, depth - 1);
+    //     } else {
+    //         System.out.println(node.m);
+    //     }
+    // }
 
 
-    public void expandNode() {
+    // public void expandNode() {
 
-        // for each available move...
+    //     // for each available move...
 
-        // update frontier list
+    //     // update frontier list
 
-        // ...
+    //     // ...
 
-    }
+    // }
 
 }

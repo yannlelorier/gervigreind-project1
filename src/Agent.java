@@ -5,6 +5,6 @@ public interface Agent
     public String nextAction(int[] lastmove);
     public void cleanup();
     public int dfs_with_depth(int remainingDepth);
-    public Moves dfs_depth(int remainingDepth);
+    public int dfs_depth(int remainingDepth);
     public void setEnv(Environment env);
 }

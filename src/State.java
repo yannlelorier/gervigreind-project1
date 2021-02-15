@@ -1,4 +1,3 @@
-import java.util.HashSet;
 
 public class State implements Cloneable {
     protected short[][] myMap; // 0, 1 or 2 for empty, black or white
