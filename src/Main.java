@@ -18,21 +18,41 @@ public class Main {
     public static void main(String[] args) {
         try {
             // 2 different environments
-            Environment env3_5 = new Environment(3, 5);
+//            Environment env3_5 = new Environment(3, 5);
 //			Environment env3_4 = new Environment(3, 4);
 
             // checking legal Moves and doMove undoMove
 
 //			System.out.println(env3_5.legalMoves(env3_5.currentState));
             // Node(Node parent, int val, Moves m) // where it moves
-            Node n1 = new Node(0, new Moves(1, 1, 1, 2));
-            Node n2 = new Node(n1, 0, new Moves(0, 3, 1, 2));
-            Node n3 = new Node(n2, 0, new Moves(0, 3, 1, 2));
+//            Node n1 = new Node(0, new Moves(1, 1, 1, 2));
+//            Node n2 = new Node(n1, 0, new Moves(0, 3, 1, 2));
+//            Node n3 = new Node(n2, 0, new Moves(0, 3, 1, 2));
+//
+//            int retVal;
+//			Agent agent = new MyAgent();
+//			agent.setEnv(env3_5);
+//			retVal = agent.search(n3.depth);
+//            System.out.println("RetVal: " + retVal);
+            Environment env2_3 = new Environment(2, 3);
+            for (int i = 0; i < env2_3.currentState.myMap.length; i++) { // for each column
+                for (int j = 0; j < env2_3.currentState.myMap[0].length; j++) { // for each row
+                    env2_3.currentState.myMap[i][j] = 0;
+                }
+            }
 
-			Agent agent = new MyAgent();
-			agent.setEnv(env3_5);
-			agent.dfs_with_depth(n3.depth);
-			// traverseNodes(n3, n3.depth);
+            env2_3.currentState.myMap[0][0] = 1;
+            env2_3.currentState.myMap[1][0] = 1;
+            env2_3.currentState.myMap[0][2] = 2;
+            env2_3.currentState.myMap[1][2] = 2;
+
+            Agent agent = new MyAgent();
+            agent.setEnv(env2_3);
+            System.out.println(env2_3.currentState);
+            int val = agent.dfs_depth(2);
+            System.out.println("RetVal: " + val);
+//			agent.dfs_depth(n3.depth);
+            // traverseNodes(n3, n3.depth);
 
 
 //			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2));

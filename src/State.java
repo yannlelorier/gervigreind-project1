@@ -40,7 +40,4 @@ public class State implements Cloneable {
         }
         return toRet.toString();
     }
-
-
-
 }
