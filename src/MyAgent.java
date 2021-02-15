@@ -50,7 +50,7 @@ public class MyAgent implements Agent
         myTurn = !myTurn;
         if (myTurn) {
             // check if current player is correct
-            if (!(role == "white" && env.currentState.isWhiteTurn || role == "black" && !env.currentState.isWhiteTurn)){
+            if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)){
                 System.out.println("MyAgent : nextAction -> current player is not correct");
             }
             int worstVal = Integer.MAX_VALUE;
@@ -58,8 +58,7 @@ public class MyAgent implements Agent
                 worstVal = -worstVal;
             }
 
-
-
+            // dfs_with_depth(, new Node(0, m));
             // TODO: 2. run alpha-beta search to determine the best move
             // look at RandomAgent to start
             // You should start with something "simple" Like DFS
@@ -73,33 +72,48 @@ public class MyAgent implements Agent
         }
     }
 
+    public void setEnv(Environment env) {
+        this.env = env;
+    }
+
     @Override
     public void cleanup() {
 
     }
 
+    @Override
     public void dfs_with_depth(int remainingDepth, Node parentNode){
         if (remainingDepth == 0) { // if we have reached our depth, we evaluate the state
-//             Node currentNode = new Node(parentNode, env.eval(env.currentState) );
-            System.out.println("State: " + env.currentState.toString() + " has evaluation of: " + env.eval(env.currentState)); // to debug
+            // Node(Node parent, int val, Moves m)
+            Node currentNode = new Node(parentNode, env.eval(env.currentState), parentNode.m);
+            // System.out.println("State @ base: " + env.currentState.toString() + " has evaluation of: " + env.eval(env.currentState)); // to debug
+            traverseNodes(currentNode, currentNode.depth);
         }
         else { // else we have to continue going
             // create worst value so it will definitely get updated
+            // System.out.println("State: " + env.currentState.toString() + " has evaluation of: " + env.eval(env.currentState)); // to debug
             int worstVal = Integer.MAX_VALUE;
             if (!env.currentState.isWhiteTurn){
                 worstVal = -worstVal;
             }
-//             Node thisNode = new Node(parentNode, worstVal, );
+            Node thisNode = new Node(parentNode.parent, worstVal, parentNode.m);
             // iterate through all available moves
             for (Moves m : env.legalMoves(env.currentState)){
                 env.doMove(env.currentState, m); // do the move to change the state
-                if (remainingDepth > 0) {
-//                     dfs_with_depth(remainingDepth - 1, thisNode);
-                }
+                dfs_with_depth(remainingDepth - 1, thisNode);
                 env.undoMove(env.currentState, m); // undo the move to get the old state back
             }
         }
 
+    }
+
+    private static void traverseNodes(Node node, int depth) {
+        if (node.parent != null) {
+            System.out.println(node.m);
+            traverseNodes(node.parent, depth - 1);
+        } else {
+            System.out.println(node.m);
+        }
     }
 
 

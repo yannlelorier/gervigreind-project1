@@ -28,8 +28,11 @@ public class Main {
             Node n1 = new Node(0, new Moves(1, 1, 1, 2));
             Node n2 = new Node(n1, 0, new Moves(0, 3, 1, 2));
             Node n3 = new Node(n2, 0, new Moves(0, 3, 1, 2));
-//
-//            traverseNodes(n3, n3.depth);
+
+			Agent agent = new MyAgent();
+			agent.setEnv(env3_5);
+			agent.dfs_with_depth(n3.depth, n1);
+			// traverseNodes(n3, n3.depth);
 
 
 //			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2));
