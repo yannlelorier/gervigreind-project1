@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class RandomAgent implements Agent
+public class RandomAgent
 {
 	private Random random = new Random();
 
@@ -62,9 +62,5 @@ public class RandomAgent implements Agent
 	}
 
 	// is called when the game is over or the match is aborted
-	@Override
-	public void cleanup() {
-		// TODO: cleanup so that the agent is ready for the next match
-	}
 
 }
