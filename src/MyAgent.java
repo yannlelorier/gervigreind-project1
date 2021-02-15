@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MyAgent implements Agent {
@@ -10,9 +8,12 @@ public class MyAgent implements Agent {
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
+    public Moves bestMove;
 
     /*
-        init(String role, int playclock) is called once before you have to select the first action. Use it to initialize the agent. role is either "white" or "black" and playclock is the number of seconds after which nextAction must return.
+     init(String role, int playclock) is called once before you have to select the first action.
+     Use it to initialize the agent. role is either "white" or "black" and playclock is the
+     number of seconds after which nextAction must return.
     */
     public void init(String role, int width, int height, int playclock) {
         this.role = role;
@@ -23,16 +24,13 @@ public class MyAgent implements Agent {
         isWhiteTurn = true;
         isTerminalState = false;
         env = new Environment(width, height);
+        bestMove = new Moves(0, 0, 0, 0);
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
     public String nextAction(int[] lastMove) {
         if (lastMove != null) {
-            boolean didKill = true;
-            if (env.currentState.myMap[lastMove[2]][lastMove[3]] == 0) {
-                didKill = true;
-            }
             Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
             String roleOfLastPlayer;
             if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
@@ -64,8 +62,13 @@ public class MyAgent implements Agent {
             // Then go add on it more, For example: DFS -> DFS with iterative deepening
             // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
             // Remember to always test everything you do as soon as you can do it!!
+            int val = dfs_depth(3);
+//            int val = minimax(3, myTurn);
+            // For debugging purposes
+//            System.out.println("Val: " + val);
+//            System.out.println("BestMove: " + bestMove);
 
-            return "noop"; // This has to be changed
+            return "(move " + bestMove.x + " " + bestMove.y + " " + bestMove.x2 + " " + bestMove.y2 + ")";
         } else {
             return "noop";
         }
@@ -78,95 +81,113 @@ public class MyAgent implements Agent {
     @Override
     public void cleanup() {
     }
-    // todo: evaluate and find best value
-    // todo: find best move based on the best value
-    // todo: white - black = minimax
 
-    @Override
-    public int search(int depth) {
-        if (depth == 0) {
-            System.out.println("Val: " + env.eval(env.currentState));
-            return env.eval(env.currentState);
-        }
-        int bestEval = Integer.MAX_VALUE;
-        bestEval = -bestEval;
-        List<Moves> moves = env.legalMoves(env.currentState);
-        if (moves.size() == 0) {
-            if (isTerminalState) {
-                return bestEval;
-            }
-            return 0;
-        }
-        for (Moves m : moves) {
-            env.doMove(env.currentState, m);
-            int evaluation = -search(depth - 1);
-            bestEval = Math.max(evaluation, bestEval);
-            env.undoMove(env.currentState, m);
-        }
-        return bestEval;
-    }
-
+    /**
+     * First implementation of the minimax algorithm
+     * Known issues: It never arrives at a terminal state and moves.size() is never 0,
+     */
     @Override
     public int dfs_depth(int depth) {
-        if (depth == 0) {
-            return env.eval(env.currentState);
+        if (depth == 0) {  // when it reaches the leaf or max-depth is achieved
+//            System.out.println(env.currentState); // please uncomment this to see the strange behaviour.
+            return env.eval(env.currentState);  // evaluation of that state
         }
-        Moves bestMove = new Moves(-1, -1, -1, -1);
         int bestEval = Integer.MAX_VALUE;
         bestEval = -bestEval;
-        List<Moves> moves = env.legalMoves(env.currentState);
-        if (moves.size() == 0) {
-            if (isTerminalState) {
+        List<Moves> moves = env.legalMoves(env.currentState);  // all possible moves
+        if (moves.size() == 0) { // if there are no possible moves, return 0
+            if (isTerminalState) {  // if it is a terminal state, return the best value, can be a draw?
+                // It never arrives here
                 return bestEval;
             }
             return 0;
         }
         for (Moves m : moves) {
-            env.doMove(env.currentState, m);
-            int evaluation = -dfs_depth(depth - 1);
-            bestEval = Math.max(evaluation, bestEval);
+            env.doMove(env.currentState, m);  // move and update the current state
+            int evaluation = -dfs_depth(depth - 1);   // get the evaluation and do the recursive step.
+//            System.out.println("BestEval: " + bestEval + ", " + evaluation);
+            if (evaluation > bestEval) {  // if current eval is > best eval, then update bestEval and best move.
+                bestEval = evaluation;
+                bestMove = m;
+            }
             env.undoMove(env.currentState, m);
         }
         return bestEval;
     }
 
-    private static void traverseNodes(Node node, int depth) {
-        if (node.parent != null) {
-            System.out.println(node.m);
-            traverseNodes(node.parent, depth - 1);
-        } else {
-            System.out.println(node.m);
+    /**
+     * This is a second implementation of minimax, which now takes depth and the role of player.
+     * In theory they both should return the same values but it does not.
+     * We just tried different possible ways of implementing, thinking ahead for alfa-beta pruning.
+     */
+    @Override
+    public int minimax(int depth, boolean maximizingPlayer) {
+        if (depth == 0) {
+//            System.out.println(env.currentState);
+            return env.eval(env.currentState);
         }
+        int bestEval = Integer.MAX_VALUE;
+        if (maximizingPlayer) {
+            bestEval = -bestEval;
+            List<Moves> moves = env.legalMoves(env.currentState);
+            if (moves.size() == 0) {
+                if (isTerminalState) {
+                    return bestEval;
+                }
+                return 0;
+            }
+            for (Moves m : moves) {
+                env.doMove(env.currentState, m);
+                int evaluation = minimax(depth - 1, false);
+                System.out.println("MaxEval: " + bestEval + ", " + evaluation);
+                if (evaluation > bestEval) {
+                    bestEval = evaluation;
+                    bestMove = m;
+                }
+                env.undoMove(env.currentState, m);
+            }
+        } else {
+            List<Moves> moves = env.legalMoves(env.currentState);
+            if (moves.size() == 0) {
+                if (isTerminalState) {
+                    return bestEval;
+                }
+                return 0;
+            }
+            for (Moves m : moves) {
+                env.doMove(env.currentState, m);
+                int evaluation = minimax(depth - 1, true);
+                System.out.println("MinEval: " + bestEval + ", " + evaluation);
+                if (evaluation > bestEval) {
+                    bestEval = evaluation;
+                    bestMove = m;
+                }
+                env.undoMove(env.currentState, m);
+            }
+        }
+        return bestEval;
     }
-
-
 //    @Override
-//    public int dfs_with_depth(int remainingDepth) {
-//        if (remainingDepth == 0) { // if we have reached our depth, we evaluate the state
+//    public int search(int depth) {
+//        if (depth == 0) {
 //            System.out.println("Val: " + env.eval(env.currentState));
 //            return env.eval(env.currentState);
-//        } else { // else we have to continue going
-//            // iterate through all available moves
-//            if (env.currentState.isWhiteTurn) {
-//                int maxEval = Integer.MAX_VALUE;
-//                maxEval = -maxEval;
-//                for (Moves m : env.legalMoves(env.currentState)) {
-//                    env.doMove(env.currentState, m); // do the move to change the state
-//                    int eval = dfs_with_depth(remainingDepth - 1);
-//                    env.undoMove(env.currentState, m); // undo the move to get the old state back
-//                    maxEval = Math.max(maxEval, eval);
-//                }
-//                return maxEval;
-//            } else {
-//                int minEval = Integer.MAX_VALUE;
-//                for (Moves m : env.legalMoves(env.currentState)) {
-//                    env.doMove(env.currentState, m); // do the move to change the state
-//                    int eval = dfs_with_depth(remainingDepth - 1);
-//                    env.undoMove(env.currentState, m); // undo the move to get the old state back
-//                    minEval = Math.min(minEval, eval);
-//                }
-//                return minEval;
-//            }
 //        }
+//        int bestEval = Integer.MAX_VALUE;
+//        bestEval = -bestEval;
+//        List<Moves> moves = env.legalMoves(env.currentState);
+//        if (moves.size() == 0) {
+//            if (isTerminalState) {
+//                return bestEval;
+//            }
+//            return 0;
+//        }
+//        for (Moves m : moves) {
+//            env.doMove(env.currentState, m);
+//            int evaluation = -search(depth - 1);
+//            bestEval = Math.max(evaluation, bestEval);
+//            env.undoMove(env.currentState, m);
+//        }
+//        return bestEval;
 //    }
 }
