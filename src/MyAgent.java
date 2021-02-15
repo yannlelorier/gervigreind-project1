@@ -81,7 +81,6 @@ public class MyAgent implements Agent {
     // todo: find best move based on the best value
     // todo: white - black = minimax
 
-    @Override
     public int dfs_with_depth(int remainingDepth) {
         // create worst value so it will definitely get updated
         int worstVal = Integer.MAX_VALUE;
@@ -93,7 +92,11 @@ public class MyAgent implements Agent {
         } else { // else we have to continue going
             // iterate through all available moves
             for (Moves m : env.legalMoves(env.currentState)) {
+                State thisState = env.currentState;
                 env.doMove(env.currentState, m); // do the move to change the state
+                // if (env.eval(thisState) > env.eval(env.currentState)) {
+                //     bestMove = m;
+                // }
                 dfs_with_depth(remainingDepth - 1);
                 env.undoMove(env.currentState, m); // undo the move to get the old state back
             }
@@ -112,7 +115,11 @@ public class MyAgent implements Agent {
         } else { // else we have to continue going
             // iterate through all available moves
             for (Moves m : env.legalMoves(env.currentState)) {
+                State thisState = env.currentState;
                 env.doMove(env.currentState, m); // do the move to change the state
+                if (env.eval(env.currentState) > env.eval(thisState)) {
+                    bestMove = m;
+                }
                 dfs_with_depth(remainingDepth - 1);
                 env.undoMove(env.currentState, m); // undo the move to get the old state back
             }

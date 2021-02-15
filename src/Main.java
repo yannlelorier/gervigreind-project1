@@ -31,7 +31,8 @@ public class Main {
 
 			Agent agent = new MyAgent();
 			agent.setEnv(env3_5);
-			agent.dfs_with_depth(n3.depth);
+			agent.dfs_depth(n3.depth);
+			// agent.dfs_with_depth(n3.depth);
 			// traverseNodes(n3, n3.depth);
 
 
