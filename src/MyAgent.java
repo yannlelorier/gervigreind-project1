@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class MyAgent implements Agent {
     private String role; // the name of this agent's role (white or black)
@@ -8,7 +9,9 @@ public class MyAgent implements Agent {
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
-    public Moves bestMove;
+    public Moves move;
+    long startTime;
+    int offSet;
 
     /*
      init(String role, int playclock) is called once before you have to select the first action.
@@ -24,7 +27,8 @@ public class MyAgent implements Agent {
         isWhiteTurn = true;
         isTerminalState = false;
         env = new Environment(width, height);
-        bestMove = new Moves(0, 0, 0, 0);
+        move = new Moves(0, 0, 0, 0);
+        offSet = 0;
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
@@ -62,13 +66,10 @@ public class MyAgent implements Agent {
             // Then go add on it more, For example: DFS -> DFS with iterative deepening
             // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
             // Remember to always test everything you do as soon as you can do it!!
-            int val = dfs_depth(3);
-//            int val = minimax(3, myTurn);
-            // For debugging purposes
-//            System.out.println("Val: " + val);
-//            System.out.println("BestMove: " + bestMove);
+            startTime = System.currentTimeMillis();
+            move = dfs_depthRoot(env.currentState);
 
-            return "(move " + bestMove.x + " " + bestMove.y + " " + bestMove.x2 + " " + bestMove.y2 + ")";
+            return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
         } else {
             return "noop";
         }
@@ -82,112 +83,64 @@ public class MyAgent implements Agent {
     public void cleanup() {
     }
 
-    /**
-     * First implementation of the minimax algorithm
-     * Known issues: It never arrives at a terminal state and moves.size() is never 0,
-     */
-    @Override
-    public int dfs_depth(int depth) {
-        if (depth == 0) {  // when it reaches the leaf or max-depth is achieved
-//            System.out.println(env.currentState); // please uncomment this to see the strange behaviour.
-            return env.eval(env.currentState);  // evaluation of that state
-        }
-        int bestEval = Integer.MAX_VALUE;
-        bestEval = -bestEval;
-        List<Moves> moves = env.legalMoves(env.currentState);  // all possible moves
-        if (moves.size() == 0) { // if there are no possible moves, return 0
-            if (isTerminalState) {  // if it is a terminal state, return the best value, can be a draw?
-                // It never arrives here
-                return bestEval;
+    public Moves dfs_depthRoot(State state) {
+        int bestVal = Integer.MAX_VALUE;
+        bestVal = -bestVal;
+        Moves bestMove = null;
+        int evaluation;
+        try {
+            for (int depth = 1; ; depth++) {
+                if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
+                    throw new TimeoutException("Timeout");
+                }
+                List<Moves> moves = env.legalMoves(state);
+                for (Moves m : moves) {
+                    env.doMove(state, m);  // move and update the current state
+                    int negVal = Integer.MAX_VALUE;
+                    negVal = -negVal;
+                    evaluation = -dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
+                    if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
+                        bestVal = evaluation;
+                        bestMove = m;
+                    }
+                    env.undoMove(state, m);
+                }
             }
-            return 0;
+        } catch (TimeoutException e) {
+            System.out.println(e.getMessage());
         }
-        for (Moves m : moves) {
-            env.doMove(env.currentState, m);  // move and update the current state
-            int evaluation = -dfs_depth(depth - 1);   // get the evaluation and do the recursive step.
-//            System.out.println("BestEval: " + bestEval + ", " + evaluation);
-            if (evaluation > bestEval) {  // if current eval is > best eval, then update bestEval and best move.
-                bestEval = evaluation;
-                bestMove = m;
-            }
-            env.undoMove(env.currentState, m);
-        }
-        return bestEval;
+        return bestMove;
     }
 
-    /**
-     * This is a second implementation of minimax, which now takes depth and the role of player.
-     * In theory they both should return the same values but it does not.
-     * We just tried different possible ways of implementing, thinking ahead for alfa-beta pruning.
-     */
     @Override
-    public int minimax(int depth, boolean maximizingPlayer) {
-        if (depth == 0) {
-//            System.out.println(env.currentState);
-            return env.eval(env.currentState);
-        }
+    public int dfs_depth(State state, int depth, int alpha, int beta) {
         int bestEval = Integer.MAX_VALUE;
-        if (maximizingPlayer) {
-            bestEval = -bestEval;
-            List<Moves> moves = env.legalMoves(env.currentState);
-            if (moves.size() == 0) {
-                if (isTerminalState) {
-                    return bestEval;
-                }
-                return 0;
+        bestEval = -bestEval;
+        try {
+            if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
+                throw new TimeoutException("Timeout");
             }
+            if (depth <= 0 || env.isTerminalState(state)) {
+                if (role.equals("white")) {
+                    return env.eval(state);
+                } else {
+                    return -env.eval(state);
+                }
+            }
+
+            List<Moves> moves = env.legalMoves(state);
             for (Moves m : moves) {
-                env.doMove(env.currentState, m);
-                int evaluation = minimax(depth - 1, false);
-                System.out.println("MaxEval: " + bestEval + ", " + evaluation);
-                if (evaluation > bestEval) {
-                    bestEval = evaluation;
-                    bestMove = m;
+                env.doMove(state, m);
+                bestEval = Math.max(bestEval, -dfs_depth(env.currentState, depth - 1, -beta, -alpha));
+                alpha = Math.max(alpha, bestEval);
+                if (alpha > beta) {
+                    break;
                 }
-                env.undoMove(env.currentState, m);
+                env.undoMove(state, m);
             }
-        } else {
-            List<Moves> moves = env.legalMoves(env.currentState);
-            if (moves.size() == 0) {
-                if (isTerminalState) {
-                    return bestEval;
-                }
-                return 0;
-            }
-            for (Moves m : moves) {
-                env.doMove(env.currentState, m);
-                int evaluation = minimax(depth - 1, true);
-                System.out.println("MinEval: " + bestEval + ", " + evaluation);
-                if (evaluation > bestEval) {
-                    bestEval = evaluation;
-                    bestMove = m;
-                }
-                env.undoMove(env.currentState, m);
-            }
+        } catch (TimeoutException e) {
+            System.out.println(e.getMessage());
         }
         return bestEval;
     }
-//    @Override
-//    public int search(int depth) {
-//        if (depth == 0) {
-//            System.out.println("Val: " + env.eval(env.currentState));
-//            return env.eval(env.currentState);
-//        }
-//        int bestEval = Integer.MAX_VALUE;
-//        bestEval = -bestEval;
-//        List<Moves> moves = env.legalMoves(env.currentState);
-//        if (moves.size() == 0) {
-//            if (isTerminalState) {
-//                return bestEval;
-//            }
-//            return 0;
-//        }
-//        for (Moves m : moves) {
-//            env.doMove(env.currentState, m);
-//            int evaluation = -search(depth - 1);
-//            bestEval = Math.max(evaluation, bestEval);
-//            env.undoMove(env.currentState, m);
-//        }
-//        return bestEval;
-//    }
 }

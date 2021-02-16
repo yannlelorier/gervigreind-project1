@@ -6,9 +6,7 @@ public interface Agent {
 
     public void cleanup();
 
-    public int minimax(int depth, boolean maximizingPlayer);
-
-    public int dfs_depth(int depth);
+    public int dfs_depth(State s, int depth, int alpha, int beta);
 
     public void setEnv(Environment env);
 
