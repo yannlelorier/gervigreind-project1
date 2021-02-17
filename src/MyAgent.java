@@ -47,14 +47,17 @@ public class MyAgent implements Agent {
         myTurn = !myTurn;
         if (myTurn) {
             // check if current player is correct
-            if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
-                System.out.println("MyAgent : nextAction -> current player is not correct");
-            }
-            int worstVal = Integer.MAX_VALUE;
-            if (!env.currentState.isWhiteTurn) {
-                worstVal = -worstVal;
-            }
-
+//            if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
+//                System.out.println("MyAgent : nextAction -> current player is not correct");
+//            }
+//            int worstVal = Integer.MAX_VALUE;
+//            if (!env.currentState.isWhiteTurn) {
+//                worstVal = -worstVal;
+//            }
+            role = "white";
+            Moves bestM;
+            bestM = bestMove(env.currentState);
+            System.out.println(bestM);
             // dfs_with_depth(, new Node(0, m));
             // TODO: 2. run alpha-beta search to determine the best move
             // look at RandomAgent to start
@@ -62,13 +65,13 @@ public class MyAgent implements Agent {
             // Then go add on it more, For example: DFS -> DFS with iterative deepening
             // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
             // Remember to always test everything you do as soon as you can do it!!
-            int val = dfs_depth(3);
+            //int val = dfs_depth(3);
 //            int val = minimax(3, myTurn);
             // For debugging purposes
 //            System.out.println("Val: " + val);
 //            System.out.println("BestMove: " + bestMove);
 
-            return "(move " + bestMove.x + " " + bestMove.y + " " + bestMove.x2 + " " + bestMove.y2 + ")";
+            return "(move " + bestM.x + " " + bestM.y + " " + bestM.x2 + " " + bestM.y2 + ")";
         } else {
             return "noop";
         }
@@ -76,6 +79,54 @@ public class MyAgent implements Agent {
 
     public void setEnv(Environment env) {
         this.env = env;
+    }
+
+    public Moves bestMove(State state) {
+        int bestValue = Integer.MAX_VALUE;
+        bestValue = -bestValue;
+        Moves bestMove = null;
+        int estimatedValue;
+        //List<Moves> moves = new List<Moves>();
+        List<Moves> moves = env.legalMoves(state);
+        System.out.println(moves);
+        for (Moves m: moves) {
+            env.doMove(env.currentState, m);
+            estimatedValue = -bestValue(env.currentState, 1); //depth = 3
+            env.undoMove(env.currentState, m);
+            if(estimatedValue > bestValue) {
+                bestValue = estimatedValue;
+                bestMove = m;
+            }
+        }
+        return bestMove;
+    }
+
+    public int bestValue(State s, int depth) {
+        int bestValue = Integer.MAX_VALUE;
+        bestValue = -bestValue;
+        int estimatedValue;
+        if(depth==0 ) {
+            //System.out.println("BV: " + bestValue);
+//            System.out.println("Eval: " + env.eval(env.currentState));
+//            return env.eval(env.currentState);
+            if(role.equals("white")) return env.eval(env.currentState);
+            else return -env.eval(env.currentState);
+        }
+        List<Moves> moves = env.legalMoves(s);
+//        System.out.println("Legal moves: " + moves);
+//        System.out.println("At depth: " + depth);
+        for (Moves m: moves) {
+            env.doMove(env.currentState, m);
+
+            estimatedValue = -bestValue(env.currentState, depth-1); //depth = 3
+            env.undoMove(env.currentState, m);
+           System.out.println("BV: " + estimatedValue);
+            if(estimatedValue > bestValue) {
+                bestValue = estimatedValue;
+            }
+        }
+        System.out.println(bestValue);
+        return bestValue;
     }
 
     @Override

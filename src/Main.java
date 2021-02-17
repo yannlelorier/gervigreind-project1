@@ -55,7 +55,7 @@ public class Main {
 //			System.out.println(env2_3.currentState);
             // agent.setEnv(env3_5);
             // public void init(String role, int width, int height, int playclock)
-            agent.init("white", 2, 3, 10);
+            //agent.init("white", 2, 3, 10);
             System.out.println("NextAction: " + agent.nextAction(null));
 //			agent.dfs_depth(n3.depth);
 
