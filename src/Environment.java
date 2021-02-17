@@ -156,9 +156,9 @@ public class Environment {
             }
         }
         e = whitePieces - blackPieces;
-        if (!s.isWhiteTurn) {
-            e = -e; // negate the score
-        }
+//        if (!s.isWhiteTurn) {
+//            e = -e; // negate the score
+//        }
         return e;
     }
 

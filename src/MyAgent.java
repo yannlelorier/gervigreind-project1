@@ -28,21 +28,22 @@ public class MyAgent implements Agent {
         isTerminalState = false;
         env = new Environment(width, height);
         move = new Moves(0, 0, 0, 0);
-        offSet = 0;
+        offSet = 1;
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
     public String nextAction(int[] lastMove) {
+        System.out.println(">>>>>>>>>>>>\n" + env.currentState);
         if (lastMove != null) {
-            Moves lm = new Moves(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
+            Moves lm = new Moves(lastMove[0] - 1, lastMove[1] - 1, lastMove[2] - 1, lastMove[3] - 1);
             String roleOfLastPlayer;
             if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
                 roleOfLastPlayer = "white";
             } else {
                 roleOfLastPlayer = "black";
             }
-            System.out.println(roleOfLastPlayer + " moved from " + lm.x + "," + lm.y + " to " + lm.x2 + "," + lm.y2);
+            System.out.println(roleOfLastPlayer + " moved from " + (lm.x + offSet) + "," + (lm.y + offSet) + " to " + (lm.x2 + offSet) + "," + (lm.y2 + offSet));
             // TODO: 1. update your internal world model according to the action that was just executed
             env.doMove(env.currentState, lm);
         }
@@ -65,7 +66,7 @@ public class MyAgent implements Agent {
             // You should start with something "simple" Like DFS
             // Then go add on it more, For example: DFS -> DFS with iterative deepening
             // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
-            // Remember to always test everything you do as soon as you can do it!!
+            // Remember to always test everything you do as soon as you can do it!
             startTime = System.currentTimeMillis();
             move = dfs_depthRoot(env.currentState);
 
@@ -83,22 +84,28 @@ public class MyAgent implements Agent {
     public void cleanup() {
     }
 
+    public State cloneState(State s) {
+        State state = new State();
+        state.isWhiteTurn = s.isWhiteTurn;
+        state.myMap = s.myMap;
+        return state;
+    }
+
     public Moves dfs_depthRoot(State state) {
         int bestVal = Integer.MAX_VALUE;
         bestVal = -bestVal;
         Moves bestMove = null;
         int evaluation;
+        State newS = cloneState(env.currentState);
+        System.out.println("State>###################: \n" + newS + "\n");
         try {
             for (int depth = 1; ; depth++) {
-                if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
-                    throw new TimeoutException("Timeout");
-                }
                 List<Moves> moves = env.legalMoves(state);
                 for (Moves m : moves) {
                     env.doMove(state, m);  // move and update the current state
                     int negVal = Integer.MAX_VALUE;
                     negVal = -negVal;
-                    evaluation = -dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
+                    evaluation = dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
                     if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
                         bestVal = evaluation;
                         bestMove = m;
@@ -109,38 +116,37 @@ public class MyAgent implements Agent {
         } catch (TimeoutException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("new current state: " + env.currentState);
+        System.out.println("old STate: " + newS);
+        env.currentState = newS;
         return bestMove;
     }
 
     @Override
-    public int dfs_depth(State state, int depth, int alpha, int beta) {
+    public int dfs_depth(State state, int depth, int alpha, int beta) throws TimeoutException {
+        if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
+            throw new TimeoutException("Timeout");
+        }
         int bestEval = Integer.MAX_VALUE;
         bestEval = -bestEval;
-        try {
-            if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
-                throw new TimeoutException("Timeout");
+        if (depth <= 0 || env.isTerminalState(state)) {
+            if (role.equals("white")) {
+                return env.eval(state);
+            } else {
+                return -env.eval(state);
             }
-            if (depth <= 0 || env.isTerminalState(state)) {
-                if (role.equals("white")) {
-                    return env.eval(state);
-                } else {
-                    return -env.eval(state);
-                }
-            }
-
-            List<Moves> moves = env.legalMoves(state);
-            for (Moves m : moves) {
-                env.doMove(state, m);
-                bestEval = Math.max(bestEval, -dfs_depth(env.currentState, depth - 1, -beta, -alpha));
-                alpha = Math.max(alpha, bestEval);
-                if (alpha > beta) {
-                    break;
-                }
-                env.undoMove(state, m);
-            }
-        } catch (TimeoutException e) {
-            System.out.println(e.getMessage());
         }
+        List<Moves> moves = env.legalMoves(state);
+        for (Moves m : moves) {
+            env.doMove(state, m);
+            bestEval = Math.max(bestEval, -dfs_depth(env.currentState, depth - 1, -beta, -alpha));
+            alpha = Math.max(alpha, bestEval);
+            if (alpha > beta) {
+                break;
+            }
+            env.undoMove(state, m);
+        }
+
         return bestEval;
     }
 }

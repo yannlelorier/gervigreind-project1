@@ -3,7 +3,7 @@
 ;;; pawn whopping with two rows of pawns
 ;;;
 ;;; - two-player turn-taking game played on a board of varying size
-;;;   (changable using the size parameter below)
+;;;   (changeable using the size parameter below)
 ;;; - both players have two rows of pawns
 ;;; - pawns move and capture like in chess, but cannot go two steps forward
 ;;; - the goal is to bring one pawn to the opposite side of the board
