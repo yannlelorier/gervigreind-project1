@@ -3,7 +3,7 @@ logs/
 # Created by https://www.toptal.com/developers/gitignore/api/vscode,intellij,linux,windows,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,intellij,linux,windows,java
 
-.DS_Store/
+.DS_Store
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
