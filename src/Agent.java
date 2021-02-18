@@ -9,7 +9,4 @@ public interface Agent {
 
     public int dfs_depth(State s, int depth, int alpha, int beta) throws TimeoutException;
 
-    public void setEnv(Environment env);
-
-//    public int search(int depth);
 }

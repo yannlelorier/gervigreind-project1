@@ -48,7 +48,6 @@ public class MyAgent implements Agent {
             env.doMove(env.currentState, lm);
         }
 
-        // update turn (above that line it myTurn is still for the previous state)
         myTurn = !myTurn;
         if (myTurn) {
             // check if current player is correct
@@ -60,13 +59,7 @@ public class MyAgent implements Agent {
                 worstVal = -worstVal;
             }
 
-            // dfs_with_depth(, new Node(0, m));
             // TODO: 2. run alpha-beta search to determine the best move
-            // look at RandomAgent to start
-            // You should start with something "simple" Like DFS
-            // Then go add on it more, For example: DFS -> DFS with iterative deepening
-            // -> Minimax with iterative deepening -> Add pruning (alpha-beta search)
-            // Remember to always test everything you do as soon as you can do it!
             startTime = System.currentTimeMillis();
             move = dfs_depthRoot(env.currentState);
 
@@ -76,18 +69,18 @@ public class MyAgent implements Agent {
         }
     }
 
-    public void setEnv(Environment env) {
-        this.env = env;
-    }
-
     @Override
     public void cleanup() {
     }
 
     public State cloneState(State s) {
+        short[][] newMap = new short[env.sizeX][env.sizeY];
         State state = new State();
         state.isWhiteTurn = s.isWhiteTurn;
-        state.myMap = s.myMap;
+        for (int i = 0; i < env.sizeX; i++) {
+            if (env.sizeY >= 0) System.arraycopy(s.myMap[i], 0, newMap[i], 0, env.sizeY);
+        }
+        state.myMap = newMap;
         return state;
     }
 
@@ -96,8 +89,7 @@ public class MyAgent implements Agent {
         bestVal = -bestVal;
         Moves bestMove = null;
         int evaluation;
-        State newS = cloneState(env.currentState);
-        System.out.println("State>###################: \n" + newS + "\n");
+        State newS = cloneState(state);
         try {
             for (int depth = 1; ; depth++) {
                 List<Moves> moves = env.legalMoves(state);
@@ -105,7 +97,7 @@ public class MyAgent implements Agent {
                     env.doMove(state, m);  // move and update the current state
                     int negVal = Integer.MAX_VALUE;
                     negVal = -negVal;
-                    evaluation = dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
+                    evaluation = -dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
                     if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
                         bestVal = evaluation;
                         bestMove = m;
@@ -116,8 +108,6 @@ public class MyAgent implements Agent {
         } catch (TimeoutException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("new current state: " + env.currentState);
-        System.out.println("old STate: " + newS);
         env.currentState = newS;
         return bestMove;
     }
@@ -141,9 +131,7 @@ public class MyAgent implements Agent {
             env.doMove(state, m);
             bestEval = Math.max(bestEval, -dfs_depth(env.currentState, depth - 1, -beta, -alpha));
             alpha = Math.max(alpha, bestEval);
-            if (alpha > beta) {
-                break;
-            }
+            if (alpha > beta) { break; }
             env.undoMove(state, m);
         }
 
