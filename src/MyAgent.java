@@ -36,7 +36,7 @@ public class MyAgent implements Agent {
     public String nextAction(int[] lastMove) {
         System.out.println(">>>>>>>>>>>>\n" + env.currentState);
         if (lastMove != null) {
-            Moves lm = new Moves(lastMove[0] - 1, lastMove[1] - 1, lastMove[2] - 1, lastMove[3] - 1);
+            Moves lm = new Moves(lastMove[0] - offSet, lastMove[1] - offSet, lastMove[2] - offSet, lastMove[3] - offSet);
             String roleOfLastPlayer;
             if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
                 roleOfLastPlayer = "white";
