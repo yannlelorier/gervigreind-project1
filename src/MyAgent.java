@@ -59,9 +59,6 @@ public class MyAgent implements Agent {
                 System.out.println("MyAgent : nextAction -> current player is not correct");
                 // throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
-            // bestMove = new Moves(-1, -1, -1, -1); // initialized as a "rubbish" move
-            // int res = dfs_depth(2);
-            // System.out.println("kmara 11111 "+ res);
 
             // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
