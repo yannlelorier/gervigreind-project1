@@ -1,3 +1,4 @@
+import java.util.concurrent.TimeoutException;
 
 public interface Agent {
     public void init(String role, int width, int height, int playclock);
@@ -6,11 +7,6 @@ public interface Agent {
 
     public void cleanup();
 
-    public int minimax(int depth, boolean maximizingPlayer);
+    public Moves bestMove(State state);
 
-    public int dfs_depth(int depth);
-
-    public void setEnv(Environment env);
-
-//    public int search(int depth);
 }

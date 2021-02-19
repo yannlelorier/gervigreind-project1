@@ -39,25 +39,25 @@ public class Main {
 //			agent.setEnv(env3_5);
 //			retVal = agent.search(n3.depth);
 //            System.out.println("RetVal: " + retVal);
-            Agent agent = new MyAgent();
-            Environment env2_3 = new Environment(2, 3);
-            for (int i = 0; i < env2_3.currentState.myMap.length; i++) { // for each column
-                for (int j = 0; j < env2_3.currentState.myMap[0].length; j++) { // for each row
-                    env2_3.currentState.myMap[i][j] = 0;
-                }
-            }
 
-            env2_3.currentState.myMap[0][0] = 1;
-            env2_3.currentState.myMap[1][0] = 1;
-            env2_3.currentState.myMap[0][2] = 2;
-            env2_3.currentState.myMap[1][2] = 2;
-            agent.setEnv(env2_3);
-//			System.out.println(env2_3.currentState);
-            // agent.setEnv(env3_5);
-            // public void init(String role, int width, int height, int playclock)
-            agent.init("white", 2, 3, 10);
-            System.out.println("NextAction: " + agent.nextAction(null));
-//			agent.dfs_depth(n3.depth);
+//            Agent agent = new MyAgent();
+//            Environment env2_3 = new Environment(2, 3);
+//            for (int i = 0; i < env2_3.currentState.myMap.length; i++) { // for each column
+//                for (int j = 0; j < env2_3.currentState.myMap[0].length; j++) { // for each row
+//                    env2_3.currentState.myMap[i][j] = 0;
+//                }
+//            }
+//
+//            env2_3.currentState.myMap[0][0] = 1;
+//            env2_3.currentState.myMap[1][0] = 1;
+//            env2_3.currentState.myMap[0][2] = 2;
+//            env2_3.currentState.myMap[1][2] = 2;
+//            agent.setEnv(env2_3);
+////			System.out.println(env2_3.currentState);
+//            // agent.setEnv(env3_5);
+//            // public void init(String role, int width, int height, int playclock)
+//            agent.init("white", 2, 3, 10);
+//            System.out.println("NextAction: " + agent.nextAction(null));
 
 
 //			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2));
@@ -204,9 +204,9 @@ public class Main {
             //
 
 
-			/*
+
 			// TODO: put in your agent here
-			Agent agent = new RandomAgent();
+			Agent agent = new MyAgent();
 
 			int port=4001;
 			if(args.length>=1){
@@ -214,7 +214,7 @@ public class Main {
 			}
 			GamePlayer gp=new GamePlayer(port, agent);
 			gp.waitForExit();
-			*/
+
         } catch (Exception ex) {
             ex.printStackTrace();
             System.exit(-1);
