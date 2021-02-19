@@ -62,7 +62,6 @@ public class MyAgent implements Agent {
             startTime = System.currentTimeMillis();
             move = bestMove(env.currentState);
 
-
             return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
         } else {
             return "noop";
@@ -89,43 +88,42 @@ public class MyAgent implements Agent {
     }
 
     @Override
-    public Moves bestMove(State state){
+    public Moves bestMove(State state) {
         int depth = 1;
-        int loss = -100;
-        int win = 100;
-        Moves move = new Moves(0, 0, 0, 0);;
+        int loss = -1000;
+        int win = 1000;
+        Moves move = new Moves(0, 0, 0, 0);
         State clonedState = cloneState(state);
+
         try {
-            while(true){
+            while (true) {
                 move = negaMaxRoot(clonedState, depth, loss, win);
                 depth++;
             }
-
         } catch (TimeoutException e) {
             System.out.println(e.getMessage());
         }
+
+        System.out.println("This is returned move: " + move.toString());
         return move;
     }
 
     Moves negaMaxRoot(State state, int depth, int alpha, int beta) throws TimeoutException {
-        if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
-            throw new TimeoutException("Timeout");
-        }
         int bestVal = 0;
         int v = 0;
-        Moves bestMove = null;
+        Moves bestMove = new Moves(0, 0, 0, 0);
         List<Moves> moves = env.legalMoves(state);
         for (Moves m : moves) {
             env.doMove(state, m);
-            v = -negamax(state, depth -1, -beta, -alpha);
+            v = -negamax(state, depth - 1, -beta, -alpha);
             env.undoMove(state, m);
-            if (v > bestVal){
+            if (v > bestVal) {
                 bestVal = v;
                 bestMove = m;
-                if (v>alpha) {
+                if (v > alpha) {
                     alpha = v;
                 }
-                if (alpha >= beta){
+                if (alpha >= beta) {
                     break;
                 }
             }
@@ -149,21 +147,21 @@ public class MyAgent implements Agent {
         List<Moves> moves = env.legalMoves(state);
         for (Moves m : moves) {
             env.doMove(state, m);
-            v = -negamax(state, depth -1, -beta, -alpha);
+            v = -negamax(state, depth - 1, -beta, -alpha);
             env.undoMove(state, m);
-            if (v > bestVal){
+            if (v > bestVal) {
                 bestVal = v;
-                if (v>alpha) {
+                if (v > alpha) {
                     alpha = v;
                 }
-                if (alpha >= beta){
+                if (alpha >= beta) {
                     break;
                 }
             }
         }
         return bestVal;
     }
-//
+
 //    @Override
 //    public Moves bestMove(State state) {
 //        // TODO change to alpha beta
