@@ -59,9 +59,9 @@ public class MyAgent implements Agent {
                 System.out.println("MyAgent : nextAction -> current player is not correct");
                 // throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
-            bestMove = new Moves(-1, -1, -1, -1); // initialized as a "rubbish" move
-            int res = dfs_depth(2);
-            System.out.println("kmara 11111 "+ res);
+            // bestMove = new Moves(-1, -1, -1, -1); // initialized as a "rubbish" move
+            // int res = dfs_depth(2);
+            // System.out.println("kmara 11111 "+ res);
 
             // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
@@ -98,17 +98,28 @@ public class MyAgent implements Agent {
         int depth = 1;
         int loss = -100;
         int win = 100;
-        Moves move = new Moves(0, 0, 0, 0);;
+        Moves move = new Moves(0, 0, 0, 0);
         State clonedState = cloneState(state);
-        try {
-            while(true){
+
+        do {
+            try {
                 move = negaMaxRoot(clonedState, depth, loss, win);
                 depth++;
-            }
+            }catch (TimeoutException e) {
+                System.out.println(e.getMessage());
+                break;
 
-        } catch (TimeoutException e) {
-            System.out.println(e.getMessage());
-        }
+            }
+        } while (true);
+        // try {
+        //     while(true){
+        //         move = negaMaxRoot(clonedState, depth, loss, win);
+        //         depth++;
+        //     }
+
+        // } catch (TimeoutException e) {
+        //     System.out.println(e.getMessage());
+        // }
         return move;
     }
 
