@@ -95,14 +95,15 @@ public class MyAgent implements Agent {
         Moves move = new Moves(0, 0, 0, 0);
         State clonedState = cloneState(state);
 
-        try {
-            while (true) {
+        do {
+            try {
                 move = negaMaxRoot(clonedState, depth, loss, win);
                 depth++;
+            } catch (TimeoutException e) {
+                System.out.println(e.getMessage());
+                break;
             }
-        } catch (TimeoutException e) {
-            System.out.println(e.getMessage());
-        }
+        } while (true);
 
         System.out.println("This is returned move: " + move.toString());
         return move;
