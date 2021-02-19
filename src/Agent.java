@@ -7,6 +7,6 @@ public interface Agent {
 
     public void cleanup();
 
-    public int dfs_depth(State s, int depth, int alpha, int beta) throws TimeoutException;
+    public Moves bestMove(State state);
 
 }

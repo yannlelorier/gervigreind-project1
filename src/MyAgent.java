@@ -46,22 +46,22 @@ public class MyAgent implements Agent {
             System.out.println(roleOfLastPlayer + " moved from " + (lm.x + offSet) + "," + (lm.y + offSet) + " to " + (lm.x2 + offSet) + "," + (lm.y2 + offSet));
             // TODO: 1. update your internal world model according to the action that was just executed
             env.doMove(env.currentState, lm);
+            System.out.println("State after: " + env.currentState);
         }
 
         myTurn = !myTurn;
+
         if (myTurn) {
             // check if current player is correct
             if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
                 System.out.println("MyAgent : nextAction -> current player is not correct");
-            }
-            int worstVal = Integer.MAX_VALUE;
-            if (!env.currentState.isWhiteTurn) {
-                worstVal = -worstVal;
+                // throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
 
             // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
-            move = dfs_depthRoot(env.currentState);
+            move = bestMove(env.currentState);
+
 
             return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
         } else {
@@ -72,6 +72,10 @@ public class MyAgent implements Agent {
     @Override
     public void cleanup() {
     }
+
+    // TODO: change the way we generate legal moves, from which has most likely to happen,
+    // TODO: forward, right, left
+    // TODO: change the order from highest value - lowest and vice versa
 
     public State cloneState(State s) {
         short[][] newMap = new short[env.sizeX][env.sizeY];
@@ -84,57 +88,134 @@ public class MyAgent implements Agent {
         return state;
     }
 
-    public Moves dfs_depthRoot(State state) {
-        int bestVal = Integer.MAX_VALUE;
-        bestVal = -bestVal;
-        Moves bestMove = null;
-        int evaluation;
-        State newS = cloneState(state);
+    @Override
+    public Moves bestMove(State state){
+        int depth = 1;
+        int loss = -100;
+        int win = 100;
+        Moves move = new Moves(0, 0, 0, 0);;
+        State clonedState = cloneState(state);
         try {
-            for (int depth = 1; ; depth++) {
-                List<Moves> moves = env.legalMoves(state);
-                for (Moves m : moves) {
-                    env.doMove(state, m);  // move and update the current state
-                    int negVal = Integer.MAX_VALUE;
-                    negVal = -negVal;
-                    evaluation = -dfs_depth(env.currentState, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
-                    if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
-                        bestVal = evaluation;
-                        bestMove = m;
-                    }
-                    env.undoMove(state, m);
-                }
+            while(true){
+                move = negaMaxRoot(clonedState, depth, loss, win);
+                depth++;
             }
+
         } catch (TimeoutException e) {
             System.out.println(e.getMessage());
         }
-        env.currentState = newS;
-        return bestMove;
+        return move;
     }
 
-    @Override
-    public int dfs_depth(State state, int depth, int alpha, int beta) throws TimeoutException {
+    Moves negaMaxRoot(State state, int depth, int alpha, int beta) throws TimeoutException {
         if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
             throw new TimeoutException("Timeout");
         }
-        int bestEval = Integer.MAX_VALUE;
-        bestEval = -bestEval;
+        int bestVal = 0;
+        int v = 0;
+        Moves bestMove = null;
+        List<Moves> moves = env.legalMoves(state);
+        for (Moves m : moves) {
+            env.doMove(state, m);
+            v = -negamax(state, depth -1, -beta, -alpha);
+            env.undoMove(state, m);
+            if (v > bestVal){
+                bestVal = v;
+                bestMove = m;
+                if (v>alpha) {
+                    alpha = v;
+                }
+                if (alpha >= beta){
+                    break;
+                }
+            }
+        }
+        return bestMove;
+    }
+
+    int negamax(State state, int depth, int alpha, int beta) throws TimeoutException {
+        if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
+            throw new TimeoutException("Timeout");
+        }
         if (depth <= 0 || env.isTerminalState(state)) {
-            if (role.equals("white")) {
+            if (state.isWhiteTurn) {
                 return env.eval(state);
             } else {
                 return -env.eval(state);
             }
         }
+        int bestVal = 0;
+        int v = 0;
         List<Moves> moves = env.legalMoves(state);
         for (Moves m : moves) {
             env.doMove(state, m);
-            bestEval = Math.max(bestEval, -dfs_depth(env.currentState, depth - 1, -beta, -alpha));
-            alpha = Math.max(alpha, bestEval);
-            if (alpha > beta) { break; }
+            v = -negamax(state, depth -1, -beta, -alpha);
             env.undoMove(state, m);
+            if (v > bestVal){
+                bestVal = v;
+                if (v>alpha) {
+                    alpha = v;
+                }
+                if (alpha >= beta){
+                    break;
+                }
+            }
         }
-
-        return bestEval;
+        return bestVal;
     }
+//
+//    @Override
+//    public Moves bestMove(State state) {
+//        // TODO change to alpha beta
+//        int bestVal = Integer.MAX_VALUE;
+//        bestVal = -bestVal;
+//        Moves bestMove = null;
+//        int evaluation;
+//        int negVal = Integer.MAX_VALUE;
+//        negVal = -negVal;
+//        State newS = cloneState(state);  // check if it is a deep copy of the state
+//        try {
+//            for (int depth = 1; ; depth++) {
+//                List<Moves> moves = env.legalMoves(newS);
+//                for (Moves m : moves) {
+//                    env.doMove(newS, m);  // move and update the current state
+//                    evaluation = -bestValue(newS, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
+//                    if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
+//                        bestVal = evaluation;
+//                        bestMove = m;
+//                        //TODO: missing pruning, if alpha >= beta, if we find a wining move.
+//                    }
+//                    env.undoMove(newS, m);
+//                }
+//            }
+//        } catch (TimeoutException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return bestMove;
+//    }
+//
+//    public int bestValue(State state, int depth, int alpha, int beta) throws TimeoutException {
+//        if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
+//            throw new TimeoutException("Timeout");
+//        }
+//        int bestEval = Integer.MAX_VALUE;
+//        bestEval = -bestEval;
+//        if (depth <= 0 || env.isTerminalState(state)) {
+//            if (state.isWhiteTurn) {
+//                return env.eval(state);
+//            } else {
+//                return -env.eval(state);
+//            }
+//        }
+//        List<Moves> moves = env.legalMoves(state);
+//        for (Moves m : moves) {
+//            env.doMove(state, m);
+//            bestEval = Math.max(bestEval, -bestValue(state, depth - 1, -beta, -alpha));
+//            alpha = Math.max(alpha, bestEval);
+//            if (alpha >= beta) { break; }
+//            env.undoMove(state, m);
+//        }
+//
+//        return bestEval;
+//    }
 }
