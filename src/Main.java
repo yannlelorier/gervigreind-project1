@@ -1,56 +1,63 @@
 
 
 public class Main {
-
     /**
      * starts the game player and waits for messages from the game master <br>
      * Command line options: [port]
      */
-
-	 
-    // private static void traverseNodes(Node node, int depth) {
-    //     if (node.parent != null) {
-    //         System.out.println(node.m);
-    //         traverseNodes(node.parent, depth - 1);
-    //     } else {
-    //         System.out.println(node.m);
-    //     }
-    // }
-
+    /**
+     * Note from students: Ermir Pellumbi, Wojciech Wozniak, Yann Le Lorier, Elial Guðjónsen
+     * We initialized a simple environment with width: 2 and height 3, which looks like this:
+     * BBB
+     * ---
+     * WWW
+     * We created a setter to help us debug and we used that to se the environment:
+     * agent.setEnv(env2_3);
+     * We initialized the agent with variables:
+     * agent.init("white", 2, 3, 10);
+     * And in order to get an evaluation for which is the best move we ran this:
+     * System.out.println("NextAction: " + agent.nextAction(null));
+     * *************************************************************
+     * At MyAgent.java at nextAction() method, beside the skeleton code that was provided, we ran the dfs_search() as:
+     * int val = dfs_depth(3);
+     * the returned values is the best value from the evaluation, and the method should update the
+     * global variable "bestMove" that we declared at the initialization of the method.
+     * When dfs_depth() end its running cycles, and the bestMove is updated, then we return that move.
+     */
     public static void main(String[] args) {
         try {
             // 2 different environments
-            Environment env3_5 = new Environment(3, 5);
-// //			Environment env3_4 = new Environment(3, 4);
+//            Environment env3_5 = new Environment(3, 5);
+//			Environment env3_4 = new Environment(3, 4);
 
 //             // checking legal Moves and doMove undoMove
 
-// //			System.out.println(env3_5.legalMoves(env3_5.currentState));
-//             // Node(Node parent, int val, Moves m) // where it moves
-//             Node n1 = new Node(0, new Moves(1, 1, 1, 2));
-//             Node n2 = new Node(n1, 0, new Moves(0, 3, 1, 2));
-//             Node n3 = new Node(n2, 0, new Moves(0, 3, 1, 2));
+//			System.out.println(env3_5.legalMoves(env3_5.currentState));
+//
+//            int retVal;
+//			Agent agent = new MyAgent();
+//			agent.setEnv(env3_5);
+//			retVal = agent.search(n3.depth);
+//            System.out.println("RetVal: " + retVal);
+            Agent agent = new MyAgent();
+            Environment env2_3 = new Environment(2, 3);
+            for (int i = 0; i < env2_3.currentState.myMap.length; i++) { // for each column
+                for (int j = 0; j < env2_3.currentState.myMap[0].length; j++) { // for each row
+                    env2_3.currentState.myMap[i][j] = 0;
+                }
+            }
 
-// 			Agent agent = new MyAgent();
-// 			agent.setEnv(env3_5);
-			// System.out.println("esta madre="+agent.dfs_depth(n3.depth));
-			Agent agent = new MyAgent();
-			Environment env2_3 = new Environment(2, 3);
-			for (int i = 0; i < env2_3.currentState.myMap.length; i++) { // for each column
-				for (int j = 0; j < env2_3.currentState.myMap[0].length; j++) { // for each row
-					env2_3.currentState.myMap[i][j] = 0;
-				}
-			}
-
-			env2_3.currentState.myMap[0][0] = 1;
-			env2_3.currentState.myMap[1][0] = 1;
-			env2_3.currentState.myMap[0][2] = 2;
-			env2_3.currentState.myMap[1][2] = 2;
-			agent.setEnv(env2_3);
-			// agent.setEnv(env3_5);
-			// public void init(String role, int width, int height, int playclock)
-			agent.init("white", 2, 3, 10);
-			System.out.println("kmara ya acabe hdtptm " + agent.nextAction(null));
+            env2_3.currentState.myMap[0][0] = 1;
+            env2_3.currentState.myMap[1][0] = 1;
+            env2_3.currentState.myMap[0][2] = 2;
+            env2_3.currentState.myMap[1][2] = 2;
+            agent.setEnv(env2_3);
+//			System.out.println(env2_3.currentState);
+            // agent.setEnv(env3_5);
+            // public void init(String role, int width, int height, int playclock)
+            agent.init("white", 2, 3, 10);
+            System.out.println("NextAction: " + agent.nextAction(null));
+//			agent.dfs_depth(n3.depth);
 
 
 //			env3_5.doMove(env3_5.currentState, new Moves(1, 1, 1, 2));

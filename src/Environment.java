@@ -166,7 +166,6 @@ public class Environment {
             e = -e; // negate the score
         }
         return e;
-
     }
 
     // print out current state for this environment. Good for testing.
