@@ -1,5 +1,15 @@
 # Artificial Intelligence - Project 1
 
+**Students**
+
+Ermir Pellumbi
+
+Wojciech Woźniak
+
+Yann Le Lorier
+
+Elías Friðberg Guðjohnsen
+
 ## Model of the environment
 
 ### State of the environment
@@ -41,52 +51,31 @@ We ran the experiments principally on the small gdl files (5x5 and 3x5) with no 
 In our case we evaluate only the number of pawns. We count the number of white and black pawns and then subtract these values and return it as a evaluation value. 
 We also tried to consider the location of the pawn that is closest to the final stage. If the pawn is closest to the final state, the more points we get in the evaluation.
 
-#### Results
+#### Results (playing against random opponent)
+
+| Size of the Board | Opponent | Win  | Draw | Lose | # of Runs |
+| ----------------- | -------- | ---- | ---- | ---- | --------- |
+| 5x5               | Black    | 7    | 0    | 2    | 9         |
+| 3x5               | Black    | 5    | 3    | 1    | 9         |
+| 9x9               | Black    | 4    | 0    | 0    | 4         |
+| 5x5               | White    | 7    | 2    | 0    | 9         |
+| 3x5               | White    | 4    | 4    | 1    | 9         |
+| 9x9               | White    | 4    | 0    | 1    | 5         |
 
 We took most of the experiments at 3x5 board with time constrain that was 10 seconds. During tests we did both, we played against our agent and we let the random agent to play versus it. When we played against the agent, we never managed to lose. The most common result was a draw, but we managed to win a couple of times against it. While our agent played with the random agent, the results were more randomized. The most common result was also a draw, but there were also some loses and wins.
 
-We also did some testing on bigger boards and with the random agent. On the 9x9 board has won 4 out of 4 games.
+#### Improvements made
+
+**Prioritize capturing moves**:
+
+While checking for the legal moves, the capturing moves has priority over the forward move. The reason for this is that a capturing move will have an impact on the evaluation function, since the number of opponent pawns will decrease after such move, along with the fact that the probability that it is a better move than a forward move is high.
+
+**Legal moves**:
+
+Checks the legal moves from the opposite side, all the way to the agent's side. *i.e.* when playing as white, it checks the legal moves from bottom to top, and when playing as black, from top to bottom.
 
 #### Interpretation of the results
 
-The heuristics we took isn't perfect in every cases. It has a priority to capture other pieces, instead of analysing the positions of pawns and going to the final stage.
+The heuristics we took isn't perfect in every cases. It has a priority to capture other pieces, instead of analyzing the positions of pawns and going to the final stage. 
 
-##### Outputs
-
-```sh
--Error- Environment : doMove() -> c.myMap[1][1] != 1
--Error- Environment : doMove() -> c.myMap[1][3] != 2
--Error- Environment : doMove() -> c.myMap[1][1] != 1
--Error- Environment : undoMove() -> c.myMap[0][2] != 1
--Error- Environment : doMove() -> c.myMap[1][1] != 1
--Error- Environment : undoMove() -> c.myMap[2][2] != 1
--Error- Environment : doMove() -> c.myMap[1][1] != 1
--Error- Environment : undoMove() -> c.myMap[1][2] != 1
--Error- Environment : undoMove() -> c.myMap[1][2] != 2
--Error- Environment : doMove() -> c.myMap[1][4] != 2
-.
-.
-.
-```
-
-After the logging of a lot of errors, the following output can be seen:
-
-```sh
-Timeout
-This is returned move:  Move from (0, 0) to (0, 0)
-```
-
-Which corresponds to the "dummy move" we create at the beginning of the `bestMove()` function. The move is then submitted like that to the game, which results in the failure of our agent to win.
-
-The results for the tests we ran were in a lot of cases, confusing. We analyzed closely the different parts of the program, specifically:
-
-- The main AB pruning algorithm: we checked the logic time and time again, and found no evident flaws in the implementation
-- Getting the legal moves: The legal moves calculation proved to be getting the correct moves, so it was not accounting for other non-allowed moves, meaning that the problem was not actually there.
-
-**Possible Problems**: the way that we clone the `State` object (in order to avoid overwriting states), may be one of the reasons the program did not work correctly. However, we did not seem to find the problem behind the error.
-
-Another possible mistake might have been the handling of the turns, which means that we gave turns to black when it was actually white's and viceversa, however after intense debugging, we were not able to find mistakes there.
-
-#### Interpretation of Results (Outputs)
-
-We came to the conclusion that we were stuck with a Java-specific semantic error. Something that had to do with the cloning of the Java objects that was not handling the values and getting incorrect updates on the environment.
+The reason why our agent does better in bigger environments against a random opponent, is because in a smaller environment, the probability of making a good move with random heuristic is bigger, and the closer we get to a bigger board, the better it is to have some kind of heuristic that is not random.
