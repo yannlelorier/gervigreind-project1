@@ -45,8 +45,8 @@ public class Environment {
         } else {
             int w = state.myMap.length;
             int h = state.myMap[0].length;
-            for (int i = 0; i < w; i++) {
-                for (int j = 0; j < h; j++) {
+            for (int i = w - 1; 0 <= i; i--) {
+                for (int j = h - 1; 0 <= j; j--) {
                     if (state.myMap[i][j] == 2) {
                         moves.addAll(getMoves(state, i, j));
                     }
@@ -55,8 +55,9 @@ public class Environment {
         }
         return moves;
     }
-//      for (int i = w - 1; 0 <= i; i--) {
-//        for (int j = h - 1; 0 <= j; j--) {
+
+//    for (int i = 0; i < w; i++) {
+//        for (int j = 0; j < h; j++) {
 //            if (state.myMap[i][j] == 2) {
 //                moves.addAll(getMoves(state, i, j));
 //            }

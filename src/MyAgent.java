@@ -62,10 +62,6 @@ public class MyAgent implements Agent {
     public void cleanup() {
     }
 
-    // TODO: change the way we generate legal moves, from which has most likely to happen,
-    // TODO: forward, right, left
-    // TODO: change the order from highest value - lowest and vice versa
-
     public State cloneState(State s) {
         short[][] newMap = new short[env.sizeX][env.sizeY];
         State state = new State();
