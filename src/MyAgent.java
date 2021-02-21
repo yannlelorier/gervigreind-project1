@@ -9,7 +9,9 @@ public class MyAgent implements Agent {
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
-    public Moves move;
+    //    public Moves move;
+    public Moves bestM = new Moves(-2, -2, -2, -3);
+    public Moves bestMove = new Moves(-1, -1, -1, -2);
     long startTime;
     int offSet;
 
@@ -27,7 +29,6 @@ public class MyAgent implements Agent {
         isWhiteTurn = true;
         isTerminalState = false;
         env = new Environment(width, height);
-        move = new Moves(0, 0, 0, 0);
         offSet = 1;
     }
 
@@ -60,7 +61,7 @@ public class MyAgent implements Agent {
 
             // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
-            move = bestMove(env.currentState);
+            Moves move = bestMove(env.currentState);
             return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
         } else {
             return "noop";
@@ -91,24 +92,24 @@ public class MyAgent implements Agent {
         int depth = 1;
         int loss = -1000;
         int win = 1000;
-        Moves move = new Moves(0, 0, 0, 0);
+
         State clonedState = cloneState(state);
         do {
             try {
-                move = negamaxRoot(clonedState, depth, loss, win);
+                bestMove = negamaxRoot(clonedState, depth, loss, win);
                 depth++;
             } catch (TimeoutException e) {
                 System.out.println(e.getMessage());
                 break;
             }
         } while (true);
-        return move;
+        return bestMove;
     }
 
     Moves negamaxRoot(State state, int depth, int alpha, int beta) throws TimeoutException {
         int bestVal = 0;
         int v = 0;
-        Moves bestMove = new Moves(-1, -1, -1, -1);
+
         List<Moves> moves = env.legalMoves(state);
         for (Moves m : moves) {
             env.doMove(state, m);
@@ -116,7 +117,8 @@ public class MyAgent implements Agent {
             env.undoMove(state, m);
             if (v > bestVal) {
                 bestVal = v;
-                bestMove = m;
+                bestM = m;
+                System.out.println(bestM.toString());
                 if (v > alpha) {
                     alpha = v;
                 }
@@ -125,7 +127,7 @@ public class MyAgent implements Agent {
                 }
             }
         }
-        return bestMove;
+        return bestM;
     }
 
     int negamax(State state, int depth, int alpha, int beta) throws TimeoutException {

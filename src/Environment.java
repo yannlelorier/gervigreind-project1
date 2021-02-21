@@ -59,7 +59,7 @@ public class Environment {
                     }
                 }
             }
-        } else if (!state.isWhiteTurn) {
+        } else {
             int w = state.myMap.length;
             int h = state.myMap[0].length;
             for (int i = 0; i < w; i++) { // for each column
