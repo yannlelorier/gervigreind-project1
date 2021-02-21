@@ -27,7 +27,7 @@ public class MyAgent implements Agent {
     }
 
     public String nextAction(int[] lastMove) {
-        System.out.println(">>>>>>>>>>>>\n" + env.currentState);
+//        System.out.println(">>>>>>>>>>>>\n" + env.currentState);
         if (lastMove != null) {
             Moves lm = new Moves(lastMove[0] - offSet, lastMove[1] - offSet, lastMove[2] - offSet, lastMove[3] - offSet);
             String roleOfLastPlayer;
@@ -39,7 +39,7 @@ public class MyAgent implements Agent {
             System.out.println(roleOfLastPlayer + " moved from " + (lm.x + offSet) + "," + (lm.y + offSet) + " to " + (lm.x2 + offSet) + "," + (lm.y2 + offSet));
             // TODO: 1. update your internal world model according to the action that was just executed
             env.doMove(env.currentState, lm);
-            System.out.println("State after: " + env.currentState);
+//            System.out.println("State after: " + env.currentState);
         }
 
         myTurn = !myTurn;
@@ -108,7 +108,7 @@ public class MyAgent implements Agent {
             if (v > bestVal) {
                 bestVal = v;
                 bestM = m;
-                System.out.println(bestM.toString());
+//                System.out.println(bestM.toString());
                 if (v > alpha) {
                     alpha = v;
                 }
