@@ -36,9 +36,20 @@ The legal actions for any state can be separated into the following cases:
 
 We ran the experiments principally on the small gdl files (5x5 and 3x5) with no times constraints at first. we focused primarily on getting the logic of the main algorithm correct before jumping into technicalities of the game (time constraints, legalities of the moves) while developing those on the side.
 
+#### Evaluation function
+
+In our case we evaluate only the number of pawns. We count the number of white and black pawns and then subtract these values and return it as a evaluation value. 
+We also tried to consider the location of the pawn that is closest to the final stage. If the pawn is closest to the final state, the more points we get in the evaluation.
+
 #### Results
 
-**Note**: Our implementation of project offered unsuccesful results. Next is a detailed overview of them:
+We took most of the experiments at 3x5 board with time constrain that was 10 seconds. During tests we did both, we played against our agent and we let the random agent to play versus it. When we played against the agent, we never managed to lose. The most common result was a draw, but we managed to win a couple of times against it. While our agent played with the random agent, the results were more randomized. The most common result was also a draw, but there were also some loses and wins.
+
+We also did some testing on bigger boards and with the random agent. On the 9x9 board has won 4 out of 4 games.
+
+#### Interpretation of the results
+
+The heuristics we took isn't perfect in every cases. It has a priority to capture other pieces, instead of analysing the positions of pawns and going to the final stage.
 
 ##### Outputs
 
