@@ -56,7 +56,7 @@ public class MyAgent implements Agent {
         if (myTurn) {
             // check if current player is correct
             if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
-                System.out.println("MyAgent : nextAction -> current player is not correct");
+                // System.out.println("MyAgent : nextAction -> current player is not correct");
                 // throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
 
@@ -83,46 +83,37 @@ public class MyAgent implements Agent {
         State state = new State();
         state.isWhiteTurn = s.isWhiteTurn;
         for (int i = 0; i < env.sizeX; i++) {
-            if (env.sizeY >= 0) System.arraycopy(s.myMap[i], 0, newMap[i], 0, env.sizeY);
+            for (int j=0; j<env.sizeY; j++) {
+                newMap[i][j] = s.myMap[i][j];
+                // System.out.println("newMap["+i+"]"+"["+j+"] = "+ newMap[i][j]);
+                // System.out.println("myMap["+i+"]"+"["+j+"] = "+ s.myMap[i][j]);
+                // if (env.sizeY >= 0) System.arraycopy(s.myMap[i], 0, newMap[i], 0, env.sizeY);
+            }
         }
+        // System.out.println("newMap:" + newMap.toString());
         state.myMap = newMap;
+
+
+
+        // System.out.println("state newMap" + s.myMap.toString());
         return state;
     }
 
     @Override
     public Moves bestMove(State state) {
         int depth = 1;
-<<<<<<< HEAD
-        int loss = -100;
-        int win = 100;
-=======
         int loss = -1000;
         int win = 1000;
->>>>>>> er
         Moves move = new Moves(0, 0, 0, 0);
         State clonedState = cloneState(state);
+
+        System.out.println(clonedState);
+        System.out.println(state);
 
         do {
             try {
                 move = negaMaxRoot(clonedState, depth, loss, win);
                 depth++;
-<<<<<<< HEAD
-            }catch (TimeoutException e) {
-                System.out.println(e.getMessage());
-                break;
-
-            }
-        } while (true);
-        // try {
-        //     while(true){
-        //         move = negaMaxRoot(clonedState, depth, loss, win);
-        //         depth++;
-        //     }
-
-        // } catch (TimeoutException e) {
-        //     System.out.println(e.getMessage());
-        // }
-=======
             } catch (TimeoutException e) {
                 System.out.println(e.getMessage());
                 break;
@@ -130,7 +121,6 @@ public class MyAgent implements Agent {
         } while (true);
 
         System.out.println("This is returned move: " + move.toString());
->>>>>>> er
         return move;
     }
 
