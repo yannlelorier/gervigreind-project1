@@ -55,13 +55,12 @@ public class MyAgent implements Agent {
             // check if current player is correct
             if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
                 System.out.println("MyAgent : nextAction -> current player is not correct");
-                // throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
+                throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
 
             // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
             move = bestMove(env.currentState);
-
             return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
         } else {
             return "noop";
@@ -81,7 +80,7 @@ public class MyAgent implements Agent {
         State state = new State();
         state.isWhiteTurn = s.isWhiteTurn;
         for (int i = 0; i < env.sizeX; i++) {
-            if (env.sizeY >= 0) System.arraycopy(s.myMap[i], 0, newMap[i], 0, env.sizeY);
+            System.arraycopy(s.myMap[i], 0, newMap[i], 0, env.sizeY);
         }
         state.myMap = newMap;
         return state;
@@ -94,25 +93,22 @@ public class MyAgent implements Agent {
         int win = 1000;
         Moves move = new Moves(0, 0, 0, 0);
         State clonedState = cloneState(state);
-
         do {
             try {
-                move = negaMaxRoot(clonedState, depth, loss, win);
+                move = negamaxRoot(clonedState, depth, loss, win);
                 depth++;
             } catch (TimeoutException e) {
                 System.out.println(e.getMessage());
                 break;
             }
         } while (true);
-
-        System.out.println("This is returned move: " + move.toString());
         return move;
     }
 
-    Moves negaMaxRoot(State state, int depth, int alpha, int beta) throws TimeoutException {
+    Moves negamaxRoot(State state, int depth, int alpha, int beta) throws TimeoutException {
         int bestVal = 0;
         int v = 0;
-        Moves bestMove = new Moves(0, 0, 0, 0);
+        Moves bestMove = new Moves(-1, -1, -1, -1);
         List<Moves> moves = env.legalMoves(state);
         for (Moves m : moves) {
             env.doMove(state, m);
@@ -134,7 +130,7 @@ public class MyAgent implements Agent {
 
     int negamax(State state, int depth, int alpha, int beta) throws TimeoutException {
         if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
-            throw new TimeoutException("Timeout");
+            throw new TimeoutException("Timed out!");
         }
         if (depth <= 0 || env.isTerminalState(state)) {
             if (state.isWhiteTurn) {
@@ -162,59 +158,4 @@ public class MyAgent implements Agent {
         }
         return bestVal;
     }
-
-//    @Override
-//    public Moves bestMove(State state) {
-//        // TODO change to alpha beta
-//        int bestVal = Integer.MAX_VALUE;
-//        bestVal = -bestVal;
-//        Moves bestMove = null;
-//        int evaluation;
-//        int negVal = Integer.MAX_VALUE;
-//        negVal = -negVal;
-//        State newS = cloneState(state);  // check if it is a deep copy of the state
-//        try {
-//            for (int depth = 1; ; depth++) {
-//                List<Moves> moves = env.legalMoves(newS);
-//                for (Moves m : moves) {
-//                    env.doMove(newS, m);  // move and update the current state
-//                    evaluation = -bestValue(newS, depth - 1, negVal, -bestVal);   // get the evaluation and do the recursive step.
-//                    if (evaluation > bestVal) {  // if current eval is > best eval, then update bestEval and best move.
-//                        bestVal = evaluation;
-//                        bestMove = m;
-//                        //TODO: missing pruning, if alpha >= beta, if we find a wining move.
-//                    }
-//                    env.undoMove(newS, m);
-//                }
-//            }
-//        } catch (TimeoutException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return bestMove;
-//    }
-//
-//    public int bestValue(State state, int depth, int alpha, int beta) throws TimeoutException {
-//        if (((System.currentTimeMillis() - startTime) / 1000) >= playclock) {
-//            throw new TimeoutException("Timeout");
-//        }
-//        int bestEval = Integer.MAX_VALUE;
-//        bestEval = -bestEval;
-//        if (depth <= 0 || env.isTerminalState(state)) {
-//            if (state.isWhiteTurn) {
-//                return env.eval(state);
-//            } else {
-//                return -env.eval(state);
-//            }
-//        }
-//        List<Moves> moves = env.legalMoves(state);
-//        for (Moves m : moves) {
-//            env.doMove(state, m);
-//            bestEval = Math.max(bestEval, -bestValue(state, depth - 1, -beta, -alpha));
-//            alpha = Math.max(alpha, bestEval);
-//            if (alpha >= beta) { break; }
-//            env.undoMove(state, m);
-//        }
-//
-//        return bestEval;
-//    }
 }

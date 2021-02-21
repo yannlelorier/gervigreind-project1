@@ -33,15 +33,40 @@ public class Environment {
     }
 
     // get all moves for current player
+//    public List<Moves> legalMoves(State state) {
+//        List<Moves> moves = new LinkedList<Moves>();
+//        // iterate through the list
+//        for (int i = 0; i < map.length; i++) { // for each column
+//            for (int j = 0; j < map[0].length; j++) { // for each row
+//                if (state.isWhiteTurn && map[i][j] == 1) { // if we find a white piece when it is white's turn
+//                    moves.addAll(getMoves(state, i, j)); // add all moves if any for that piece
+//                } else if (!state.isWhiteTurn && map[i][j] == 2) { // else if it is black turn and we found a black piece
+//                    moves.addAll(getMoves(state, i, j)); // add all moves if any for that piece
+//                }
+//            }
+//        }
+//        return moves;
+//    }
     public List<Moves> legalMoves(State state) {
         List<Moves> moves = new LinkedList<Moves>();
-        // iterate through the list
-        for (int i = 0; i < map.length; i++) { // for each column
-            for (int j = 0; j < map[0].length; j++) { // for each row
-                if (state.isWhiteTurn && map[i][j] == 1) { // if we find a white piece when it is white's turn
-                    moves.addAll(getMoves(state, i, j)); // add all moves if any for that piece
-                } else if (!state.isWhiteTurn && map[i][j] == 2) { // else if it is black turn and we found a black piece
-                    moves.addAll(getMoves(state, i, j)); // add all moves if any for that piece
+        if (state.isWhiteTurn) {
+            int w = state.myMap.length;
+            int h = state.myMap[0].length;
+            for (int i = 0; i < w; i++) { // for each column
+                for (int j = 0; j < h; j++) { // for each row
+                    if (state.myMap[i][j] == 1) {
+                        moves.addAll(getMoves(state, i, j));
+                    }
+                }
+            }
+        } else if (!state.isWhiteTurn) {
+            int w = state.myMap.length;
+            int h = state.myMap[0].length;
+            for (int i = 0; i < w; i++) { // for each column
+                for (int j = 0; j < h; j++) { // for each row
+                    if (state.myMap[i][j] == 2) {
+                        moves.addAll(getMoves(state, i, j));
+                    }
                 }
             }
         }
