@@ -2,24 +2,18 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class MyAgent implements Agent {
-    private String role; // the name of this agent's role (white or black)
-    private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
-    private boolean myTurn; // whether it is this agent's turn or not
-    private int width, height; // dimensions of the board
+    private String role;
+    private int playclock;
+    private boolean myTurn;
+    private int width, height;
     private boolean isWhiteTurn;
     private boolean isTerminalState;
     private Environment env;
-    //    public Moves move;
     public Moves bestM = new Moves(-2, -2, -2, -3);
     public Moves bestMove = new Moves(-1, -1, -1, -2);
     long startTime;
     int offSet;
 
-    /*
-     init(String role, int playclock) is called once before you have to select the first action.
-     Use it to initialize the agent. role is either "white" or "black" and playclock is the
-     number of seconds after which nextAction must return.
-    */
     public void init(String role, int width, int height, int playclock) {
         this.role = role;
         this.playclock = playclock;
@@ -32,8 +26,6 @@ public class MyAgent implements Agent {
         offSet = 1;
     }
 
-    // lastMove is null the first time nextAction gets called (in the initial state)
-    // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
     public String nextAction(int[] lastMove) {
         System.out.println(">>>>>>>>>>>>\n" + env.currentState);
         if (lastMove != null) {
@@ -53,13 +45,11 @@ public class MyAgent implements Agent {
         myTurn = !myTurn;
 
         if (myTurn) {
-            // check if current player is correct
             if (!(role.equals("white") && env.currentState.isWhiteTurn || role.equals("black") && !env.currentState.isWhiteTurn)) {
                 System.out.println("MyAgent : nextAction -> current player is not correct");
                 throw new RuntimeException("MyAgent : nextAction -> current player is not correct");
             }
 
-            // TODO: 2. run alpha-beta search to determine the best move
             startTime = System.currentTimeMillis();
             Moves move = bestMove(env.currentState);
             return "(move " + (move.x + offSet) + " " + (move.y + offSet) + " " + (move.x2 + offSet) + " " + (move.y2 + offSet) + ")";
